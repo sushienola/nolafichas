@@ -344,14 +344,26 @@ body.admin-mode .photo-edit-btn { display: block; }
 .proc-row:last-child { border-bottom: none; }
 .proc-qty { color: var(--caramel); font-size: 11px; }
 
-/* admin inline edit */
-body.admin-mode .editable {
-  border-bottom: 1px dashed var(--honey);
-  outline: none;
-  cursor: text;
-  min-width: 40px;
-  display: inline-block;
+.proc-rendimento-wrap {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(74,124,89,0.07);
+  border-radius: 6px;
 }
+.proc-rendimento-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.proc-rendimento-label span:last-child { font-weight: 500; }
+.proc-rend-bg { background: rgba(74,124,89,0.2); border-radius: 20px; height: 6px; overflow: hidden; }
+.proc-rend-fill { height: 100%; border-radius: 20px; background: var(--green); transition: width .4s; }
+.proc-rend-fill.low { background: var(--warn); }
+.proc-preco-kg { font-size: 11px; color: var(--caramel); margin-top: 4px; text-align: right; }
+
+body.admin-mode .editable { border-bottom: 1px dashed var(--honey); outline: none; cursor: text; min-width: 40px; display: inline-block; }
 body.admin-mode .editable:focus { background: rgba(196,154,108,0.08); border-radius: 3px; }
 .admin-only { display: none; }
 body.admin-mode .admin-only { display: flex; }
@@ -378,26 +390,10 @@ body.admin-mode .admin-only { display: flex; }
   max-height: 90vh;
   overflow-y: auto;
 }
-.modal-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--dark);
-  margin-bottom: 1.5rem;
-}
+.modal-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: var(--dark); margin-bottom: 1.5rem; }
 .field { margin-bottom: 1rem; }
 .field label { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--caramel); margin-bottom: 5px; }
-.field input, .field select, .field textarea {
-  width: 100%;
-  padding: 0.55rem 0.75rem;
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  background: var(--white);
-  font-size: 13px;
-  color: var(--dark);
-  outline: none;
-  transition: border-color .15s;
-}
+.field input, .field select, .field textarea { width: 100%; padding: 0.55rem 0.75rem; border: 0.5px solid var(--border); border-radius: 8px; background: var(--white); font-size: 13px; color: var(--dark); outline: none; transition: border-color .15s; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--caramel); }
 .field textarea { min-height: 70px; resize: vertical; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -408,124 +404,49 @@ body.admin-mode .admin-only { display: flex; }
 .btn.primary:hover { background: var(--dark); border-color: var(--dark); }
 .btn.danger { background: var(--warn-lt); color: var(--warn); border-color: var(--warn); }
 
-/* ingredient builder in modal */
 .ing-builder { margin-top: 0.5rem; }
-.ing-builder-row {
-  display: grid;
-  grid-template-columns: 2fr 0.8fr 0.7fr 0.8fr 0.8fr auto;
-  gap: 6px;
-  margin-bottom: 6px;
-  align-items: center;
-}
-.ing-builder-row input { padding: 0.4rem 0.6rem; font-size: 12px; }
-.ing-builder-row select { padding: 0.4rem 0.5rem; font-size: 12px; }
 .rm-ing { background: none; border: none; color: var(--caramel); font-size: 18px; line-height: 1; padding: 0 4px; }
 .rm-ing:hover { color: var(--warn); }
-.add-ing-btn {
-  font-size: 12px;
-  color: var(--green);
-  background: none;
-  border: 1px dashed var(--green);
-  border-radius: 6px;
-  padding: 5px 12px;
-  margin-top: 4px;
-  transition: background .15s;
-}
+.add-ing-btn { font-size: 12px; color: var(--green); background: none; border: 1px dashed var(--green); border-radius: 6px; padding: 5px 12px; margin-top: 4px; transition: background .15s; }
 .add-ing-btn:hover { background: var(--green-lt); }
-.proc-section { margin-top: 0.5rem; padding: 0.75rem; background: var(--green-lt); border-radius: 8px; border: 0.5px solid rgba(74,124,89,0.3); }
-.proc-section .proc-label { font-size: 11px; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
 
-/* ── login ── */
-#login-screen {
-  position: fixed;
-  inset: 0;
-  background: var(--cream);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 300;
-}
+.proc-box { margin-top: 0.75rem; background: var(--white); border: 0.5px solid rgba(74,124,89,0.3); border-radius: 8px; padding: 0.75rem 1rem; }
+.proc-box-title { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-bottom: 0.35rem; font-weight: 500; }
+.proc-box-desc { font-size: 12px; color: var(--caramel); margin-bottom: 0.75rem; line-height: 1.5; }
+.proc-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.proc-metric { background: var(--green-lt); border: 0.5px solid rgba(74,124,89,0.2); border-radius: 6px; padding: 0.55rem 0.75rem; }
+.proc-metric .pm-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+.proc-metric .pm-value { font-size: 17px; font-weight: 500; color: var(--dark); }
+.proc-metric .pm-hint { font-size: 10px; color: var(--caramel); margin-top: 3px; }
+.pm-custo-wrap { display: flex; align-items: baseline; gap: 3px; }
+.pm-custo-prefix { font-size: 13px; color: var(--caramel); }
+.pm-custo-wrap input { border: none; border-bottom: 1px dashed var(--honey); border-radius: 0; background: transparent; font-size: 17px; font-weight: 500; color: var(--dark); padding: 0; width: 100%; outline: none; }
+.pm-custo-wrap input:focus { border-bottom-color: var(--green); }
+
+#login-screen { position: fixed; inset: 0; background: var(--cream); display: flex; align-items: center; justify-content: center; z-index: 300; }
 #login-screen.hidden { display: none; }
-.login-box {
-  background: var(--white);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 2.5rem 2rem;
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-  box-shadow: var(--shadow);
-}
-.login-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-weight: 400;
-  color: var(--dark);
-  letter-spacing: 0.04em;
-}
-.login-sub {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--caramel);
-  margin-bottom: 2rem;
-}
+.login-box { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2.5rem 2rem; width: 100%; max-width: 360px; text-align: center; box-shadow: var(--shadow); }
+.login-logo { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 400; color: var(--dark); letter-spacing: 0.04em; }
+.login-sub { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--caramel); margin-bottom: 2rem; }
 .login-box .field { text-align: left; }
 .login-err { font-size: 12px; color: var(--warn); margin-top: 0.5rem; min-height: 1.2em; }
 
-/* ── empty state ── */
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--caramel);
-  font-size: 14px;
-}
+.empty { grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--caramel); font-size: 14px; }
 
-/* ── toast ── */
-#toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--dark);
-  color: var(--cream);
-  font-size: 13px;
-  padding: 0.65rem 1.5rem;
-  border-radius: 20px;
-  transition: transform .3s;
-  z-index: 999;
-  pointer-events: none;
-  white-space: nowrap;
-}
+#toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--dark); color: var(--cream); font-size: 13px; padding: 0.65rem 1.5rem; border-radius: 20px; transition: transform .3s; z-index: 999; pointer-events: none; white-space: nowrap; }
 #toast.show { transform: translateX(-50%) translateY(0); }
 
-/* ── loading ── */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem;
-  color: var(--caramel);
-  font-size: 13px;
-  gap: 10px;
-}
-.spinner {
-  width: 18px; height: 18px;
-  border: 2px solid var(--sand);
-  border-top-color: var(--caramel);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-}
+.loading { display: flex; align-items: center; justify-content: center; padding: 4rem; color: var(--caramel); font-size: 13px; gap: 10px; }
+.spinner { width: 18px; height: 18px; border: 2px solid var(--sand); border-top-color: var(--caramel); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── config modal ── */
 #config-url-display { font-size: 12px; color: var(--caramel); word-break: break-all; margin-top: 4px; }
+
+.badge-insumo { display: inline-block; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--honey); background: rgba(196,154,108,0.15); border: 0.5px solid var(--honey); border-radius: 4px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Nola</div>
@@ -542,7 +463,6 @@ body.admin-mode .admin-only { display: flex; }
   </div>
 </div>
 
-<!-- ADMIN BAR -->
 <div id="admin-bar" style="display:none;">
   <span class="label">admin</span>
   <div class="actions">
@@ -553,7 +473,6 @@ body.admin-mode .admin-only { display: flex; }
   </div>
 </div>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     <div class="logo-name">Nola</div>
@@ -562,17 +481,13 @@ body.admin-mode .admin-only { display: flex; }
   <nav id="main-nav"></nav>
 </header>
 
-<!-- MAIN -->
 <main>
-  <!-- GRID VIEW -->
   <div id="grid-view">
     <div class="sec-title" id="cat-label"></div>
     <div class="recipe-grid" id="recipe-grid">
       <div class="loading"><div class="spinner"></div> carregando receitas…</div>
     </div>
   </div>
-
-  <!-- DETAIL VIEW -->
   <div id="detail-view">
     <button class="back-btn" onclick="goBack()">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
@@ -600,29 +515,55 @@ body.admin-mode .admin-only { display: flex; }
         <input type="text" id="r-sub" placeholder="ex: massa fresca artesanal">
       </div>
     </div>
-    <div class="field-row">
+    <div class="field-row" id="row-preco-venda">
       <div class="field">
         <label>preço de venda (R$)</label>
         <input type="number" id="r-preco" placeholder="68">
       </div>
       <div class="field">
-        <label>rendimento</label>
-        <input type="text" id="r-rend" placeholder="ex: 2 porções">
+        <label>tags (separadas por vírgula)</label>
+        <input type="text" id="r-tags" placeholder="ex: Vegetariano, Artesanal">
       </div>
     </div>
-    <div class="field">
+    <div class="field" id="row-tags-proc" style="display:none;">
       <label>tags (separadas por vírgula)</label>
-      <input type="text" id="r-tags" placeholder="ex: Vegetariano, Artesanal">
+      <input type="text" id="r-tags-proc" placeholder="ex: base, molho">
     </div>
-    <div class="field">
+    <div class="field" style="padding:0.7rem;background:var(--green-lt);border-radius:8px;border:0.5px solid rgba(74,124,89,0.3);">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:0;">
+        <input type="checkbox" id="r-is-processado" onchange="toggleRecipeProcessado()">
+        <span style="color:var(--green);font-size:12px;letter-spacing:0.05em;text-transform:uppercase;">Este cadastro é um Processado (semi-acabado)</span>
+      </label>
+      <div id="processado-fields" style="display:none; margin-top:0.75rem;">
+        <div class="proc-box">
+          <div class="proc-box-title">resumo do processado</div>
+          <div class="proc-box-desc">Aparece como <strong>insumo</strong> em outras receitas.<br>Rendimento calculado automaticamente pela soma dos ingredientes.</div>
+          <div class="proc-metrics">
+            <div class="proc-metric">
+              <div class="pm-label">rendimento total</div>
+              <div class="pm-value" id="pm-rend">— kg</div>
+              <div class="pm-hint">calculado pelos ingredientes</div>
+            </div>
+            <div class="proc-metric">
+              <div class="pm-label">custo/kg como insumo</div>
+              <div class="pm-custo-wrap">
+                <span class="pm-custo-prefix">R$</span>
+                <input type="number" id="r-preco-insumo" placeholder="auto" step="0.01" oninput="onCustoManual()" title="deixe em branco para calcular automaticamente">
+              </div>
+              <div class="pm-hint" id="pm-custo-hint">calculado pelo CMV ÷ rendimento</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:1rem;">
       <label>ingredientes</label>
       <div class="ing-builder" id="ing-builder">
-        <div style="display:grid; grid-template-columns:2fr 0.8fr 0.7fr 0.8fr 0.8fr auto; gap:6px; margin-bottom:4px;">
+        <div style="display:grid;grid-template-columns:2fr 90px 80px 70px auto;gap:6px;margin-bottom:4px;padding:0 2px;">
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">INGREDIENTE</span>
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">QTD (kg)</span>
-          <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">UNID</span>
-          <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">REND.</span>
-          <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">CUSTO R$</span>
+          <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">UNID/OBS</span>
+          <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-align:right;">REND %</span>
           <span></span>
         </div>
         <div id="ing-rows"></div>
@@ -636,14 +577,20 @@ body.admin-mode .admin-only { display: flex; }
   </div>
 </div>
 
-<!-- MODAL: gerenciar ingredientes/preços -->
+<!-- MODAL: ingredientes/preços -->
 <div class="overlay hidden" id="modal-ingredients">
   <div class="modal" style="max-width:640px;">
     <div class="modal-title">ingredientes &amp; preços</div>
-    <p style="font-size:13px;color:var(--caramel);margin-bottom:1.25rem;">Lista mestre de ingredientes. Ao atualizar o preço/kg aqui, todas as receitas recalculam automaticamente.</p>
+    <p style="font-size:13px;color:var(--caramel);margin-bottom:1.25rem;">Lista mestre. Ao atualizar o preço/kg aqui, todas as receitas recalculam automaticamente.</p>
     <div style="display:flex;gap:8px;margin-bottom:1rem;">
       <input type="text" id="ing-search" placeholder="buscar ingrediente…" style="flex:1;padding:.5rem .75rem;border:.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;">
       <button class="btn primary" onclick="addNewIngredient()">+ novo</button>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;margin-bottom:6px;padding:0 2px;">
+      <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-transform:uppercase;">NOME</span>
+      <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-transform:uppercase;">UNIDADE</span>
+      <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-transform:uppercase;">PREÇO/KG</span>
+      <span></span>
     </div>
     <div id="ing-list" style="max-height:360px;overflow-y:auto;"></div>
     <div class="modal-footer">
@@ -653,7 +600,7 @@ body.admin-mode .admin-only { display: flex; }
   </div>
 </div>
 
-<!-- MODAL: config sheet -->
+<!-- MODAL: config -->
 <div class="overlay hidden" id="modal-config">
   <div class="modal" style="max-width:480px;">
     <div class="modal-title">configurar Google Sheet</div>
@@ -674,257 +621,253 @@ body.admin-mode .admin-only { display: flex; }
   </div>
 </div>
 
-<!-- DATALIST ingredientes -->
+<!-- datalist global para autocomplete de ingredientes -->
 <datalist id="ing-datalist"></datalist>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
 const CFG_KEY = 'nola_config';
 let CFG = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
-// defaults
-if (!CFG.password) CFG.password = 'nola2024';
+if (!CFG.password)  CFG.password  = 'nola2024';
 if (!CFG.scriptUrl) CFG.scriptUrl = '';
 
-// ── STATE ───────────────────────────────────────────────────────────────────
 let isAdmin = false;
 let currentCat = null;
 let currentRecipe = null;
 let DB = { categories: [], recipes: [], ingredients: [] };
 let editingRecipeId = null;
 let ingRowCount = 0;
+let _custoKgEditado = false;
 
-// ── BOOT ────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  const pw = document.getElementById('login-pw');
-  pw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  // If no script URL configured, show hint in login
-  if (!CFG.scriptUrl) {
-    document.getElementById('login-err').textContent = 'Primeiro configure a URL do Apps Script após fazer login como admin.';
-  }
+  document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  if (!CFG.scriptUrl) document.getElementById('login-err').textContent = 'Configure a URL do Apps Script após fazer login como admin.';
 });
 
-// ── AUTH ────────────────────────────────────────────────────────────────────
 function doLogin() {
   const pw = document.getElementById('login-pw').value;
   if (pw === CFG.password) {
     isAdmin = true;
     document.body.classList.add('admin-mode');
     document.getElementById('admin-bar').style.display = 'flex';
-    hideLogin();
-    loadData();
+    hideLogin(); loadData();
   } else {
     document.getElementById('login-err').textContent = 'Senha incorreta.';
   }
 }
-function enterGuest() {
-  isAdmin = false;
-  hideLogin();
-  loadData();
-}
-function hideLogin() {
-  document.getElementById('login-screen').classList.add('hidden');
-}
-function doLogout() {
-  isAdmin = false;
-  document.body.classList.remove('admin-mode');
-  document.getElementById('admin-bar').style.display = 'none';
-  location.reload();
-}
+function enterGuest() { isAdmin = false; hideLogin(); loadData(); }
+function hideLogin()  { document.getElementById('login-screen').classList.add('hidden'); }
+function doLogout()   { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('admin-bar').style.display = 'none'; location.reload(); }
 
-// ── DATA LOAD ────────────────────────────────────────────────────────────────
 async function loadData() {
-  if (!CFG.scriptUrl) {
-    DB = getSampleData();
-    initUI();
-    if (isAdmin) toast('Usando dados de exemplo. Configure a Sheet em ⚙');
-    return;
-  }
+  if (!CFG.scriptUrl) { DB = getSampleData(); initUI(); if (isAdmin) toast('Usando dados de exemplo. Configure a Sheet em ⚙'); return; }
   try {
-    const res = await fetch(`${CFG.scriptUrl}?action=getData`, { method: 'GET' });
+    const res  = await fetch(`${CFG.scriptUrl}?action=getData`);
     const json = await res.json();
-    if (json.ok) { DB = json.data; }
-    else { DB = getSampleData(); toast('Erro ao carregar Sheet. Usando exemplo.'); }
-  } catch (e) {
-    DB = getSampleData();
-    toast('Sem conexão com Sheet. Usando exemplo.');
-  }
+    DB = json.ok ? json.data : getSampleData();
+    if (!json.ok) toast('Erro ao carregar Sheet. Usando exemplo.');
+  } catch(e) { DB = getSampleData(); toast('Sem conexão com Sheet. Usando exemplo.'); }
   initUI();
 }
 
 async function pushData(payload) {
   if (!CFG.scriptUrl) { toast('Configure a URL do Apps Script primeiro.'); return false; }
   try {
-    const res = await fetch(CFG.scriptUrl, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: { 'Content-Type': 'text/plain' }
-    });
-    const json = await res.json();
-    return json.ok;
-  } catch (e) {
-    toast('Erro ao salvar na Sheet.');
-    return false;
-  }
+    const res = await fetch(CFG.scriptUrl, { method:'POST', body: JSON.stringify(payload), headers:{'Content-Type':'text/plain'} });
+    return (await res.json()).ok;
+  } catch(e) { toast('Erro ao salvar na Sheet.'); return false; }
 }
 
-// ── INIT UI ──────────────────────────────────────────────────────────────────
+function getIngPreco(name) {
+  const found = (DB.ingredients||[]).find(i => i.name.toLowerCase() === (name||'').toLowerCase());
+  return found ? found.preco : null;
+}
+function fmtR(v) { return 'R$ ' + (parseFloat(v)||0).toFixed(2).replace('.',','); }
+function calcRendimento(ings) {
+  return (ings||[]).reduce((s,i) => s + (parseFloat(i.qty)||0) * ((parseFloat(i.rendInd!=null?i.rendInd:100))/100), 0);
+}
+
+// ── reconstrói o datalist sempre que DB.ingredients mudar ──
+function rebuildDatalist() {
+  const dl = document.getElementById('ing-datalist');
+  if (!dl) return;
+  dl.innerHTML = (DB.ingredients||[]).map(i => `<option value="${i.name}">`).join('');
+}
+
 function initUI() {
   if (!DB.categories.length) DB.categories = ['entradas','massas','pratos','sobremesas','drinks'];
   currentCat = DB.categories[0];
-  rebuildDatalist();
+  rebuildDatalist();   // ← popula lista suspensa de ingredientes
   renderNav();
   renderGrid();
 }
 
 function renderNav() {
-  const nav = document.getElementById('main-nav');
-  nav.innerHTML = DB.categories.map(c =>
-    `<button class="nav-btn${c === currentCat ? ' active' : ''}" onclick="switchCat('${c}')">${c}</button>`
+  document.getElementById('main-nav').innerHTML = DB.categories.map(c =>
+    `<button class="nav-btn${c===currentCat?' active':''}" onclick="switchCat('${c}')">${c}</button>`
   ).join('');
 }
 
-function switchCat(c) {
-  currentCat = c;
-  currentRecipe = null;
-  renderNav();
-  renderGrid();
-  showView('grid');
-}
+function switchCat(c) { currentCat=c; currentRecipe=null; renderNav(); renderGrid(); showView('grid'); }
 
 function renderGrid() {
   document.getElementById('cat-label').textContent = currentCat;
-  const recipes = (DB.recipes || []).filter(r => r.category === currentCat);
-  const grid = document.getElementById('recipe-grid');
+  const recipes = (DB.recipes||[]).filter(r => r.category===currentCat);
+  const grid    = document.getElementById('recipe-grid');
   if (!recipes.length) {
-    grid.innerHTML = `<div class="empty">Nenhuma receita nesta categoria ainda.${isAdmin ? '<br><br><button class="btn primary" onclick="openNewRecipe()">+ criar receita</button>' : ''}</div>`;
+    grid.innerHTML = `<div class="empty">Nenhuma receita nesta categoria ainda.${isAdmin?'<br><br><button class="btn primary" onclick="openNewRecipe()">+ criar receita</button>':''}</div>`;
     return;
   }
   grid.innerHTML = recipes.map(r => `
     <div class="recipe-card" onclick="openRecipe('${r.id}')">
-      <div class="recipe-card-thumb">${r.photo ? `<img src="${r.photo}" alt="${r.name}">` : (r.icon || '🍽')}</div>
+      <div class="recipe-card-thumb">${r.photo?`<img src="${r.photo}" alt="${r.name}">`:(r.icon||'🍽')}</div>
       <div class="recipe-card-body">
-        <div class="recipe-card-name">${r.name}</div>
-        <div class="recipe-card-sub">${r.subtitle || ''}</div>
+        <div class="recipe-card-name">${r.name}${r.isProcessado?'<span class="badge-insumo">processado</span>':''}</div>
+        <div class="recipe-card-sub">${r.subtitle||''}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-// ── DETAIL ───────────────────────────────────────────────────────────────────
 function openRecipe(id) {
-  currentRecipe = (DB.recipes || []).find(r => r.id === id);
+  currentRecipe = (DB.recipes||[]).find(r => r.id===id);
   if (!currentRecipe) return;
-  renderDetail();
-  showView('detail');
+  renderDetail(); showView('detail');
 }
 
 function renderDetail() {
-  const r = currentRecipe;
-  const ings = r.ingredients || [];
-  const totalCost = ings.reduce((s, i) => s + (parseFloat(i.custo) || 0), 0);
-  const cmv = r.preco ? Math.round((totalCost / r.preco) * 100) : 0;
-  const cmvOk = cmv <= 35;
+  const r    = currentRecipe;
+  const ings = r.ingredients||[];
+  const ingsComCusto = ings.map(ing => ({ ...ing, custo: parseFloat(ing.custo)||0, precoKg: getIngPreco(ing.name) }));
+  const totalCost    = ingsComCusto.reduce((s,i)=>s+i.custo, 0);
+  const cmv          = r.preco ? Math.round((totalCost/r.preco)*100) : 0;
+  const cmvOk        = cmv <= 35;
 
-  const adminEditBtns = isAdmin ? `
-    <div style="display:flex;gap:8px;margin-top:1rem;" class="admin-only">
-      <button class="btn" onclick="openEditRecipe('${r.id}')">✏ editar receita</button>
-      <button class="btn danger" onclick="deleteRecipe('${r.id}')">🗑 excluir</button>
-    </div>` : '';
+  const adminBtns = isAdmin ? `<div style="display:flex;gap:8px;margin-top:1rem;" class="admin-only">
+    <button class="btn" onclick="openEditRecipe('${r.id}')">✏ editar receita</button>
+    <button class="btn danger" onclick="deleteRecipe('${r.id}')">🗑 excluir</button>
+  </div>` : '';
 
-  const ingRows = ings.map((ing, idx) => {
-    const hasProc = ing.processed && ing.processed.items && ing.processed.items.length;
-    const nameCell = hasProc
-      ? `<button class="proc-toggle" id="ptog-${idx}" onclick="toggleProc(${idx})">
-           <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
-           ${ing.name}
-         </button>`
-      : ing.name;
-    const subHtml = hasProc ? `
-      <div class="proc-sub" id="psub-${idx}">
-        <div class="proc-inner">
-          <div class="proc-title">${ing.processed.label || 'processado'}</div>
-          ${ing.processed.items.map(si => `<div class="proc-row"><span>${si.name}</span><span class="proc-qty">${si.qty}</span></div>`).join('')}
-        </div>
-      </div>` : '';
-    return `<tr>
-      <td>${nameCell}${subHtml}</td>
-      <td>${ing.qty ? ing.qty + ' ' + (ing.unit||'kg') : '—'}</td>
-      <td>${ing.rendInd != null && ing.rendInd !== 1 ? (ing.rendInd*100).toFixed(0)+'%' : '100%'}</td>
-      <td>R$ ${parseFloat(ing.custo || 0).toFixed(2).replace('.',',')}</td>
-    </tr>`;
+  const ingRows = ingsComCusto.map((ing,idx) => {
+    const hasProc       = ing.processed?.items?.length;
+    const precoKgDisplay = ing.precoKg!=null ? fmtR(ing.precoKg)+'/kg' : (ing.pkgkg||'—');
+    if (hasProc) {
+      const rendPct = ing.processed.rendimento||100;
+      const rendOk  = rendPct >= 60;
+      const subItems = ing.processed.items.map(si=>`<div class="proc-row"><span>${si.name}</span><span class="proc-qty">${si.qty||''}</span></div>`).join('');
+      const rendBar  = `<div class="proc-rendimento-wrap">
+        <div class="proc-rendimento-label"><span>rendimento</span><span>${rendPct}%</span></div>
+        <div class="proc-rend-bg"><div class="proc-rend-fill${rendOk?'':' low'}" style="width:${Math.min(rendPct,100)}%"></div></div>
+        <div class="proc-preco-kg">${precoKgDisplay}</div>
+      </div>`;
+      return `<tr><td>
+        <button class="proc-toggle" id="ptog-${idx}" onclick="toggleProc(${idx})">
+          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+          ${ing.name}
+        </button>
+        <div class="proc-sub" id="psub-${idx}"><div class="proc-inner">
+          <div class="proc-title">${ing.processed.label||'processado'}</div>
+          ${subItems}${rendBar}
+        </div></div>
+      </td><td>${ing.qty||''}</td><td>${precoKgDisplay}</td><td>${fmtR(ing.custo)}</td></tr>`;
+    }
+    return `<tr><td>${ing.name}</td><td>${ing.qty||''}</td><td>${precoKgDisplay}</td><td>${fmtR(ing.custo)}</td></tr>`;
   }).join('');
+
+  let costCards = '';
+  if (r.isProcessado) {
+    const rendTotal = calcRendimento(ings);
+    const custoKg   = r.precoInsumo || (rendTotal>0 ? totalCost/rendTotal : 0);
+    costCards = `
+      <div class="cost-card"><div class="lbl">Custo total</div><div class="val">R$ ${totalCost.toFixed(2).replace('.',',')}</div></div>
+      <div class="cost-card"><div class="lbl">Rendimento total</div><div class="val" style="font-size:16px;">${rendTotal.toFixed(3)} kg</div></div>
+      <div class="cost-card"><div class="lbl">Custo/kg insumo</div><div class="val" style="font-size:16px;">${fmtR(custoKg)}</div></div>`;
+  } else {
+    costCards = `
+      <div class="cost-card"><div class="lbl">CMV</div><div class="val ${cmvOk?'ok':'warn'}">${cmv}%</div></div>
+      <div class="cost-card"><div class="lbl">Preço venda</div><div class="val">R$ ${r.preco||'—'}</div></div>
+      <div class="cost-card"><div class="lbl">Custo total</div><div class="val">R$ ${totalCost.toFixed(2).replace('.',',')}</div></div>`;
+  }
 
   document.getElementById('detail-content').innerHTML = `
     <div class="recipe-hero">
       <div class="recipe-photo-wrap">
-        ${r.photo ? `<img src="${r.photo}" alt="${r.name}">` : (r.icon || '🍽')}
+        ${r.photo?`<img src="${r.photo}" alt="${r.name}">`:(r.icon||'🍽')}
         <button class="photo-edit-btn" onclick="editPhoto('${r.id}')">trocar foto</button>
       </div>
       <div>
-        <div class="recipe-title-h">${r.name}</div>
-        <div class="recipe-sub-h">${r.subtitle || ''}</div>
-        <div class="tags">${(r.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-        <div class="cost-grid">
-          <div class="cost-card"><div class="lbl">CMV</div><div class="val ${cmvOk ? 'ok' : 'warn'}">${cmv}%</div></div>
-          <div class="cost-card"><div class="lbl">Preço venda</div><div class="val">R$ ${r.preco || '—'}</div></div>
-          <div class="cost-card"><div class="lbl">Custo total</div><div class="val">R$ ${totalCost.toFixed(2).replace('.',',')}</div></div>
-          <div class="cost-card"><div class="lbl">Rendimento</div><div class="val" style="font-size:13px;">${r.rendimento || '—'}</div></div>
-        </div>
-        <div class="cmv-wrap">
-          <div class="cmv-row"><span>CMV</span><span>${cmv}%</span></div>
-          <div class="cmv-bg"><div class="cmv-fill ${cmvOk ? '' : 'warn'}" style="width:${Math.min(cmv,100)}%"></div></div>
-        </div>
-        ${adminEditBtns}
+        <div class="recipe-title-h">${r.name}${r.isProcessado?'<span class="badge-insumo" style="font-size:11px;vertical-align:middle;margin-left:8px;">processado</span>':''}</div>
+        <div class="recipe-sub-h">${r.subtitle||''}</div>
+        <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="cost-grid">${costCards}</div>
+        ${!r.isProcessado?`<div class="cmv-wrap"><div class="cmv-row"><span>CMV</span><span>${cmv}%</span></div><div class="cmv-bg"><div class="cmv-fill${cmvOk?'':' warn'}" style="width:${Math.min(cmv,100)}%"></div></div></div>`:''}
+        ${adminBtns}
       </div>
     </div>
     <div>
       <div class="section-hdr">ingredientes</div>
       <table class="ing-table">
-        <thead><tr>
-          <th>ingrediente</th><th>qtd. (bruta)</th><th>rendimento</th><th>custo</th>
-        </tr></thead>
-        <tbody>
-          ${ingRows}
-          <tr class="ing-total-row">
-            <td colspan="3">custo total</td>
-            <td>R$ ${totalCost.toFixed(2).replace('.',',')}</td>
-          </tr>
-        </tbody>
+        <thead><tr><th>ingrediente</th><th>qtd.</th><th>preço/kg</th><th>custo</th></tr></thead>
+        <tbody>${ingRows}<tr class="ing-total-row"><td colspan="3">custo total</td><td>${fmtR(totalCost)}</td></tr></tbody>
       </table>
-    </div>
-  `;
+    </div>`;
 }
 
 function toggleProc(idx) {
-  const tog = document.getElementById(`ptog-${idx}`);
-  const sub = document.getElementById(`psub-${idx}`);
-  if (!tog || !sub) return;
-  tog.classList.toggle('open');
-  sub.classList.toggle('open');
+  document.getElementById(`ptog-${idx}`)?.classList.toggle('open');
+  document.getElementById(`psub-${idx}`)?.classList.toggle('open');
 }
-
-function goBack() {
-  currentRecipe = null;
-  showView('grid');
-}
-
+function goBack() { currentRecipe=null; showView('grid'); }
 function showView(v) {
-  document.getElementById('grid-view').style.display  = v === 'grid'   ? 'block' : 'none';
-  document.getElementById('detail-view').style.display = v === 'detail' ? 'block' : 'none';
+  document.getElementById('grid-view').style.display   = v==='grid'   ? 'block' : 'none';
+  document.getElementById('detail-view').style.display = v==='detail' ? 'block' : 'none';
 }
 
-// ── RECIPE MODAL ─────────────────────────────────────────────────────────────
+// ── MODAL RECEITA ─────────────────────────────────────────────────────────────
+function toggleRecipeProcessado() {
+  const isProc = document.getElementById('r-is-processado').checked;
+  document.getElementById('row-preco-venda').style.display    = isProc ? 'none'  : 'grid';
+  document.getElementById('row-tags-proc').style.display      = isProc ? 'block' : 'none';
+  document.getElementById('processado-fields').style.display  = isProc ? 'block' : 'none';
+  if (isProc) recalcProcessado();
+}
+
+function recalcProcessado() {
+  const ings     = _collectSilent();
+  const rendTotal = calcRendimento(ings);
+  const rendEl   = document.getElementById('pm-rend');
+  if (rendEl) rendEl.textContent = rendTotal > 0 ? rendTotal.toFixed(3)+' kg' : '— kg';
+  if (!_custoKgEditado) {
+    const custoEl = document.getElementById('r-preco-insumo');
+    const hintEl  = document.getElementById('pm-custo-hint');
+    let cmvTotal  = 0;
+    ings.forEach(ing => {
+      const p = getIngPreco(ing.name);
+      if (p) cmvTotal += (parseFloat(ing.qty)||0) * p;
+    });
+    if (rendTotal > 0 && cmvTotal > 0) {
+      custoEl.value = (cmvTotal / rendTotal).toFixed(2);
+      if (hintEl) hintEl.textContent = 'calculado pelo CMV ÷ rendimento';
+    } else {
+      custoEl.value = '';
+    }
+  }
+}
+
+function onCustoManual() {
+  _custoKgEditado = true;
+  const hintEl = document.getElementById('pm-custo-hint');
+  if (hintEl) hintEl.textContent = document.getElementById('r-preco-insumo').value ? 'valor editado manualmente' : 'calculado pelo CMV ÷ rendimento';
+}
+
 function openNewRecipe() {
-  editingRecipeId = null;
+  editingRecipeId = null; _custoKgEditado = false;
   document.getElementById('modal-recipe-title').textContent = 'nova receita';
-  document.getElementById('r-name').value = '';
-  document.getElementById('r-sub').value = '';
-  document.getElementById('r-preco').value = '';
-  document.getElementById('r-rend').value = '';
-  document.getElementById('r-tags').value = '';
+  ['r-name','r-sub','r-preco','r-tags','r-tags-proc','r-preco-insumo'].forEach(id => { document.getElementById(id).value=''; });
+  document.getElementById('r-is-processado').checked         = false;
+  document.getElementById('processado-fields').style.display = 'none';
+  document.getElementById('row-preco-venda').style.display   = 'grid';
+  document.getElementById('row-tags-proc').style.display     = 'none';
   populateCatSelect();
   document.getElementById('ing-rows').innerHTML = '';
   ingRowCount = 0;
@@ -933,374 +876,290 @@ function openNewRecipe() {
 }
 
 function openEditRecipe(id) {
-  const r = (DB.recipes || []).find(x => x.id === id);
+  const r = (DB.recipes||[]).find(x => x.id===id);
   if (!r) return;
-  editingRecipeId = id;
-  document.getElementById('modal-recipe-title').textContent = 'editar receita';
-  document.getElementById('r-name').value = r.name || '';
-  document.getElementById('r-sub').value = r.subtitle || '';
-  document.getElementById('r-preco').value = r.preco || '';
-  document.getElementById('r-rend').value = r.rendimento || '';
-  document.getElementById('r-tags').value = (r.tags || []).join(', ');
+  editingRecipeId = id; _custoKgEditado = false;
+  document.getElementById('modal-recipe-title').textContent  = 'editar receita';
+  document.getElementById('r-name').value                    = r.name||'';
+  document.getElementById('r-sub').value                     = r.subtitle||'';
+  document.getElementById('r-preco').value                   = r.preco||'';
+  const tagsStr = (r.tags||[]).join(', ');
+  document.getElementById('r-tags').value                    = tagsStr;
+  document.getElementById('r-tags-proc').value               = tagsStr;
+  document.getElementById('r-is-processado').checked         = !!r.isProcessado;
+  document.getElementById('r-preco-insumo').value            = r.precoInsumo||'';
+  document.getElementById('processado-fields').style.display = r.isProcessado ? 'block' : 'none';
+  document.getElementById('row-preco-venda').style.display   = r.isProcessado ? 'none'  : 'grid';
+  document.getElementById('row-tags-proc').style.display     = r.isProcessado ? 'block' : 'none';
   populateCatSelect(r.category);
   document.getElementById('ing-rows').innerHTML = '';
   ingRowCount = 0;
-  (r.ingredients || []).forEach(ing => addIngRow(ing));
+  (r.ingredients||[]).forEach(ing => addIngRow(ing));
+  if (r.isProcessado) recalcProcessado();
   openModal('modal-recipe');
 }
 
 function populateCatSelect(selected) {
-  const sel = document.getElementById('r-cat');
-  sel.innerHTML = (DB.categories || []).map(c =>
-    `<option value="${c}" ${c === selected ? 'selected' : ''}>${c}</option>`
+  document.getElementById('r-cat').innerHTML = (DB.categories||[]).map(c =>
+    `<option value="${c}"${c===selected?' selected':''}>${c}</option>`
   ).join('');
 }
 
-
-function rebuildDatalist() {
-  const dl = document.getElementById('ing-datalist');
-  if (!dl) return;
-  dl.innerHTML = (DB.ingredients || []).map(i => `<option value="${i.name}">`).join('');
-}
-
-function ensureDatalist() {
-  rebuildDatalist();
-}
-
+// linha: nome | qtd(kg) | unid/obs | rend% | ×
+// custo NÃO aparece aqui — é calculado automaticamente por qty × preço/kg
 function addIngRow(data = {}) {
-  const idx = ingRowCount++;
-  const div = document.createElement('div');
-  div.className = 'ing-builder-row';
-  div.id = `ing-row-${idx}`;
-  
-  // Build processed sub-section HTML
-  const procItems = (data.processed && data.processed.items) ? data.processed.items : [];
-  const procLabel = (data.processed && data.processed.label) ? data.processed.label : '';
-  const isProc = procItems.length > 0;
-
+  const idx     = ingRowCount++;
+  const div     = document.createElement('div');
+  div.id        = `ing-row-${idx}`;
+  div.style.cssText = 'display:grid;grid-template-columns:2fr 90px 80px 70px auto;gap:6px;margin-bottom:6px;align-items:center;';
+  const rendInd = data.rendInd != null ? data.rendInd : 100;
+  const qty     = data.qty     != null ? data.qty     : '';
   div.innerHTML = `
-    <input type="text"   id="iname-${idx}"  list="ing-datalist" placeholder="ingrediente" value="${data.name || ''}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
-    <input type="number" id="iqty-${idx}"    placeholder="0.000"        value="${data.qty || ''}"     step="0.001">
-    <select              id="iunit-${idx}">
-      <option value="kg" ${(data.unit||'kg')==='kg'?'selected':''}>kg</option>
-      <option value="un" ${(data.unit||'')==='un'?'selected':''}>un</option>
-      <option value="l"  ${(data.unit||'')==='l' ?'selected':''}>l</option>
-    </select>
-    <input type="number" id="irend-${idx}"   placeholder="1.00"         value="${data.rendInd != null ? data.rendInd : 1}" step="0.01" title="rendimento (ex: 0.8 = 80%)">
-    <input type="number" id="icusto-${idx}"  placeholder="0,00"         value="${data.custo || ''}"   step="0.01">
-    <button class="rm-ing" onclick="removeIngRow(${idx})" title="remover">×</button>
-    <div style="grid-column:1/-1;margin-top:2px;">
-      <label style="font-size:11px;color:var(--caramel);display:flex;align-items:center;gap:6px;cursor:pointer;">
-        <input type="checkbox" id="iproc-${idx}" ${isProc ? 'checked' : ''} onchange="toggleProcSection(${idx})">
-        é um processado (receita dentro de receita)
-      </label>
-      <div id="proc-sec-${idx}" style="display:${isProc ? 'block' : 'none'};margin-top:6px;">
-        <div class="proc-section">
-          <div class="proc-label">sub-receita do processado</div>
-          <input type="text" id="iproclabel-${idx}" placeholder="nome do processado" value="${procLabel}" style="width:100%;padding:.4rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;margin-bottom:6px;outline:none;">
-          <div id="proc-items-${idx}">
-            ${procItems.map((pi, pi_idx) => procItemRow(idx, pi_idx, pi)).join('')}
-          </div>
-          <button class="add-ing-btn" style="margin-top:4px;" onclick="addProcItem(${idx})">+ item do processado</button>
-        </div>
-      </div>
-    </div>
-  `;
+    <input type="text"   id="iname-${idx}" list="ing-datalist" placeholder="ingrediente" value="${data.name||''}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
+    <input type="number" id="iqty-${idx}"  placeholder="1.000" step="0.001" value="${qty}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
+    <input type="text"   id="ipkg-${idx}"  placeholder="unid/obs" value="${data.pkgkg||''}" style="padding:.4rem .6rem;font-size:11px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
+    <input type="number" id="irend-${idx}" placeholder="100" step="1" min="1" max="500" value="${rendInd}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);text-align:right;" title="rendimento individual deste ingrediente (%)">
+    <button class="rm-ing" onclick="removeIngRow(${idx})" title="remover">×</button>`;
   document.getElementById('ing-rows').appendChild(div);
 }
 
-function procItemRow(ingIdx, itemIdx, data = {}) {
-  return `<div id="pi-${ingIdx}-${itemIdx}" style="display:flex;gap:6px;margin-bottom:4px;">
-    <input type="text" id="piname-${ingIdx}-${itemIdx}" placeholder="ingrediente" value="${data.name || ''}" style="flex:2;padding:.35rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;outline:none;">
-    <input type="text" id="piqty-${ingIdx}-${itemIdx}"  placeholder="qtd" value="${data.qty || ''}" style="flex:1;padding:.35rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;outline:none;">
-    <button class="rm-ing" onclick="removeProcItem(${ingIdx},${itemIdx})">×</button>
-  </div>`;
+function onIngChange(idx) {
+  if (document.getElementById('r-is-processado').checked) recalcProcessado();
 }
-
-let procItemCounts = {};
-function addProcItem(ingIdx) {
-  if (!procItemCounts[ingIdx]) procItemCounts[ingIdx] = 0;
-  const pIdx = procItemCounts[ingIdx]++;
-  const container = document.getElementById(`proc-items-${ingIdx}`);
-  container.insertAdjacentHTML('beforeend', procItemRow(ingIdx, pIdx));
-}
-
-function removeProcItem(ingIdx, itemIdx) {
-  const el = document.getElementById(`pi-${ingIdx}-${itemIdx}`);
-  if (el) el.remove();
-}
-
-function toggleProcSection(idx) {
-  const checked = document.getElementById(`iproc-${idx}`).checked;
-  document.getElementById(`proc-sec-${idx}`).style.display = checked ? 'block' : 'none';
-}
-
 function removeIngRow(idx) {
-  const el = document.getElementById(`ing-row-${idx}`);
-  if (el) el.remove();
+  document.getElementById(`ing-row-${idx}`)?.remove();
+  if (document.getElementById('r-is-processado').checked) recalcProcessado();
 }
 
-function collectIngredients() {
-  const rows = document.querySelectorAll('#ing-rows .ing-builder-row');
-  const result = [];
-  rows.forEach(row => {
-    const idx = row.id.replace('ing-row-', '');
-    const name  = document.getElementById(`iname-${idx}`)?.value?.trim();
-    if (!name) return;
-    const qty   = parseFloat(document.getElementById(`iqty-${idx}`)?.value)   || 0;
-    const unit  = document.getElementById(`iunit-${idx}`)?.value              || 'kg';
-    const rend  = parseFloat(document.getElementById(`irend-${idx}`)?.value);
-    const rendInd = (rend > 0) ? rend : 1;
-    const custo = parseFloat(document.getElementById(`icusto-${idx}`)?.value) || 0;
-    const isProc = document.getElementById(`iproc-${idx}`)?.checked;
-    let processed = null;
-    if (isProc) {
-      const label = document.getElementById(`iproclabel-${idx}`)?.value?.trim() || '';
-      const items = [];
-      document.querySelectorAll(`#proc-items-${idx} > div`).forEach(piRow => {
-        const piMatch = piRow.id.match(/^pi-\d+-(\d+)$/);
-        if (!piMatch) return;
-        const piIdx = piMatch[1];
-        const piName = document.getElementById(`piname-${idx}-${piIdx}`)?.value?.trim();
-        const piQty  = document.getElementById(`piqty-${idx}-${piIdx}`)?.value?.trim();
-        if (piName) items.push({ name: piName, qty: piQty || '' });
-      });
-      processed = { label, items };
-    }
-    result.push({ name, qty, unit, rendInd, custo, processed });
+function _collectSilent() {
+  return Array.from(document.querySelectorAll('#ing-rows > div')).map(row => {
+    const idx = row.id.replace('ing-row-','');
+    return {
+      name:    document.getElementById(`iname-${idx}`)?.value?.trim()||'',
+      qty:     parseFloat(document.getElementById(`iqty-${idx}`)?.value)||0,
+      pkgkg:   document.getElementById(`ipkg-${idx}`)?.value?.trim()||'',
+      rendInd: parseFloat(document.getElementById(`irend-${idx}`)?.value)||100,
+    };
   });
-  return result;
+}
+
+// custo calculado aqui, não digitado pelo usuário
+function collectIngredients() {
+  return _collectSilent().filter(i => i.name).map(i => {
+    const precoKg = getIngPreco(i.name);
+    const custo   = precoKg ? i.qty * precoKg : 0;
+    return { ...i, custo, processed: null };
+  });
 }
 
 async function saveRecipe() {
-  const name  = document.getElementById('r-name').value.trim();
+  const name = document.getElementById('r-name').value.trim();
   if (!name) { toast('Nome da receita é obrigatório.'); return; }
+
+  const isProcessado = document.getElementById('r-is-processado').checked;
+  const tags = (isProcessado
+    ? document.getElementById('r-tags-proc').value
+    : document.getElementById('r-tags').value
+  ).split(',').map(t=>t.trim()).filter(Boolean);
+
+  const ings      = collectIngredients();
+  const rendTotal = calcRendimento(ings);
+  const cmvTotal  = ings.reduce((s,i)=>s+(i.custo||0), 0);
+
+  let precoInsumo = null;
+  if (isProcessado) {
+    precoInsumo = parseFloat(document.getElementById('r-preco-insumo').value)||0;
+    if (!precoInsumo && rendTotal>0) precoInsumo = cmvTotal/rendTotal;
+  }
+
   const recipe = {
-    id:         editingRecipeId || `r_${Date.now()}`,
+    id:              editingRecipeId || `r_${Date.now()}`,
     name,
-    subtitle:   document.getElementById('r-sub').value.trim(),
-    category:   document.getElementById('r-cat').value,
-    preco:      parseFloat(document.getElementById('r-preco').value) || 0,
-    rendimento: document.getElementById('r-rend').value.trim(),
-    tags:       document.getElementById('r-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-    ingredients: collectIngredients(),
-    icon: '🍽',
-    photo: editingRecipeId ? ((DB.recipes || []).find(r => r.id === editingRecipeId)?.photo || null) : null,
+    subtitle:        document.getElementById('r-sub').value.trim(),
+    category:        document.getElementById('r-cat').value,
+    preco:           isProcessado ? 0 : (parseFloat(document.getElementById('r-preco').value)||0),
+    tags,
+    ingredients:     ings,
+    icon:            '🍽',
+    photo:           editingRecipeId ? ((DB.recipes||[]).find(r=>r.id===editingRecipeId)?.photo||null) : null,
+    isProcessado,
+    rendimentoTotal: rendTotal,
+    precoInsumo,
   };
 
   if (editingRecipeId) {
-    const idx = (DB.recipes || []).findIndex(r => r.id === editingRecipeId);
-    if (idx >= 0) DB.recipes[idx] = recipe;
+    const i = (DB.recipes||[]).findIndex(r=>r.id===editingRecipeId);
+    if (i>=0) DB.recipes[i]=recipe;
   } else {
-    if (!DB.recipes) DB.recipes = [];
-    DB.recipes.push(recipe);
+    (DB.recipes=DB.recipes||[]).push(recipe);
+  }
+
+  if (isProcessado && precoInsumo) {
+    DB.ingredients = DB.ingredients||[];
+    const ei    = DB.ingredients.findIndex(i=>i.name.toLowerCase()===name.toLowerCase());
+    const entry = { name, unit:'kg', preco: precoInsumo };
+    if (ei>=0) DB.ingredients[ei]=entry; else DB.ingredients.push(entry);
+    rebuildDatalist();
+    pushData({ action:'saveIngredients', ingredients: DB.ingredients });
   }
 
   closeModal('modal-recipe');
   renderGrid();
-  if (currentRecipe && currentRecipe.id === recipe.id) { currentRecipe = recipe; renderDetail(); }
-
-  const ok = await pushData({ action: 'saveRecipe', recipe });
+  if (currentRecipe?.id===recipe.id) { currentRecipe=recipe; renderDetail(); }
+  const ok = await pushData({ action:'saveRecipe', recipe });
   toast(ok ? 'Receita salva ✓' : 'Salvo localmente (sem Sheet)');
 }
 
 async function deleteRecipe(id) {
   if (!confirm('Excluir esta receita?')) return;
-  DB.recipes = (DB.recipes || []).filter(r => r.id !== id);
-  goBack();
-  renderGrid();
-  const ok = await pushData({ action: 'deleteRecipe', id });
+  DB.recipes = (DB.recipes||[]).filter(r=>r.id!==id);
+  goBack(); renderGrid();
+  const ok = await pushData({ action:'deleteRecipe', id });
   toast(ok ? 'Receita excluída ✓' : 'Excluído localmente');
 }
 
-// ── INGREDIENT MANAGER ───────────────────────────────────────────────────────
+// ── INGREDIENTES ──────────────────────────────────────────────────────────────
 function openIngredientManager() {
   renderIngList('');
   openModal('modal-ingredients');
-  document.getElementById('ing-search').addEventListener('input', e => renderIngList(e.target.value));
+  document.getElementById('ing-search').oninput = e => renderIngList(e.target.value);
 }
 
 function renderIngList(query) {
   const list = document.getElementById('ing-list');
-  let ings = [...(DB.ingredients || [])];
-  if (query) ings = ings.filter(i => i.name.toLowerCase().includes(query.toLowerCase()));
-  if (!ings.length) {
-    list.innerHTML = '<p style="font-size:13px;color:var(--caramel);padding:.5rem;">Nenhum ingrediente cadastrado.</p>';
-    return;
-  }
-  list.innerHTML = ings.map((ing, idx) => `
+  let ings   = [...(DB.ingredients||[])];
+  if (query) ings = ings.filter(i=>i.name.toLowerCase().includes(query.toLowerCase()));
+  if (!ings.length) { list.innerHTML='<p style="font-size:13px;color:var(--caramel);padding:.5rem;">Nenhum ingrediente cadastrado.</p>'; return; }
+  list.innerHTML = ings.map((ing,idx) => `
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
-      <input type="text" value="${ing.name}" id="ml-name-${idx}" style="padding:.4rem .6rem;border:.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;">
-      <input type="text" value="${ing.unit || 'kg'}" id="ml-unit-${idx}" style="padding:.4rem .6rem;border:.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;" placeholder="kg/un/l">
-      <input type="number" value="${ing.preco || ''}" id="ml-preco-${idx}" step="0.01" placeholder="preço/kg" style="padding:.4rem .6rem;border:.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;">
-      <button class="rm-ing" onclick="removeIngredient(${idx})" title="remover">×</button>
-    </div>
-  `).join('');
+      <input type="text"   value="${ing.name}"       id="ml-name-${idx}"  style="padding:.4rem .6rem;border:.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;">
+      <input type="text"   value="${ing.unit||'kg'}" id="ml-unit-${idx}"  style="padding:.4rem .6rem;border:.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;" placeholder="kg/un/l">
+      <input type="number" value="${ing.preco||''}"  id="ml-preco-${idx}" step="0.01" placeholder="preço/kg" style="padding:.4rem .6rem;border:.5px solid var(--border);border-radius:6px;font-size:13px;outline:none;">
+      <button class="rm-ing" onclick="removeIngredient(${idx})">×</button>
+    </div>`).join('');
 }
 
 function addNewIngredient() {
-  if (!DB.ingredients) DB.ingredients = [];
-  DB.ingredients.push({ name: '', unit: 'kg', preco: 0 });
-  renderIngList(document.getElementById('ing-search')?.value || '');
+  (DB.ingredients=DB.ingredients||[]).push({name:'',unit:'kg',preco:0});
+  renderIngList(document.getElementById('ing-search')?.value||'');
 }
-
 function removeIngredient(idx) {
-  (DB.ingredients || []).splice(idx, 1);
-  renderIngList(document.getElementById('ing-search')?.value || '');
+  (DB.ingredients||[]).splice(idx,1);
+  renderIngList(document.getElementById('ing-search')?.value||'');
 }
 
 async function saveAllIngredients() {
-  const rows = document.querySelectorAll('#ing-list > div');
   const updated = [];
-  rows.forEach((row, idx) => {
+  document.querySelectorAll('#ing-list > div').forEach((_,idx) => {
     const name  = document.getElementById(`ml-name-${idx}`)?.value?.trim();
     const unit  = document.getElementById(`ml-unit-${idx}`)?.value?.trim();
-    const preco = parseFloat(document.getElementById(`ml-preco-${idx}`)?.value) || 0;
-    if (name) updated.push({ name, unit, preco });
+    const preco = parseFloat(document.getElementById(`ml-preco-${idx}`)?.value)||0;
+    if (name) updated.push({name,unit,preco});
   });
   DB.ingredients = updated;
-  rebuildDatalist();
+  rebuildDatalist();   // ← atualiza lista suspensa
   closeModal('modal-ingredients');
-  const ok = await pushData({ action: 'saveIngredients', ingredients: updated });
+  const ok = await pushData({action:'saveIngredients', ingredients: updated});
   toast(ok ? 'Ingredientes salvos ✓' : 'Salvo localmente');
 }
 
-// ── CONFIG ───────────────────────────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────────────────
 function openConfig() {
-  document.getElementById('config-url').value = CFG.scriptUrl || '';
+  document.getElementById('config-url').value         = CFG.scriptUrl||'';
   document.getElementById('config-url-display').textContent = CFG.scriptUrl ? `atual: ${CFG.scriptUrl}` : 'nenhuma URL configurada';
-  document.getElementById('config-pw').value = '';
+  document.getElementById('config-pw').value          = '';
   openModal('modal-config');
 }
-
 function saveConfig() {
   const url = document.getElementById('config-url').value.trim();
   const pw  = document.getElementById('config-pw').value.trim();
-  if (url) CFG.scriptUrl = url;
-  if (pw)  CFG.password  = pw;
+  if (url) CFG.scriptUrl=url;
+  if (pw)  CFG.password=pw;
   localStorage.setItem(CFG_KEY, JSON.stringify(CFG));
   closeModal('modal-config');
   toast('Configuração salva ✓');
   if (url) loadData();
 }
 
-// ── PHOTO EDIT ───────────────────────────────────────────────────────────────
 function editPhoto(id) {
   const url = prompt('URL da foto (ou deixe em branco para remover):');
-  if (url === null) return;
-  const r = (DB.recipes || []).find(x => x.id === id);
+  if (url===null) return;
+  const r = (DB.recipes||[]).find(x=>x.id===id);
   if (!r) return;
-  r.photo = url || null;
-  if (currentRecipe && currentRecipe.id === id) { currentRecipe = r; renderDetail(); }
-  pushData({ action: 'saveRecipe', recipe: r });
+  r.photo = url||null;
+  if (currentRecipe?.id===id) { currentRecipe=r; renderDetail(); }
+  pushData({action:'saveRecipe', recipe:r});
   toast('Foto atualizada ✓');
 }
 
-// ── MODAL HELPERS ────────────────────────────────────────────────────────────
 function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 document.addEventListener('click', e => {
   ['modal-recipe','modal-ingredients','modal-config'].forEach(id => {
-    const overlay = document.getElementById(id);
-    if (e.target === overlay) closeModal(id);
+    if (e.target===document.getElementById(id)) closeModal(id);
   });
 });
 
-// ── TOAST ────────────────────────────────────────────────────────────────────
 function toast(msg) {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2800);
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2800);
 }
 
-// ── SAMPLE DATA ──────────────────────────────────────────────────────────────
 function getSampleData() {
   return {
-    categories: ['entradas', 'massas', 'pratos', 'sobremesas', 'drinks'],
+    categories: ['entradas','massas','pratos','sobremesas','drinks'],
     ingredients: [
-      { name: 'Farinha 00', unit: 'kg', preco: 18 },
-      { name: 'Ovos', unit: 'un', preco: 1.20 },
-      { name: 'Brócolis', unit: 'kg', preco: 12 },
-      { name: 'Ricota', unit: 'kg', preco: 28 },
-      { name: 'Parmesão', unit: 'kg', preco: 85 },
-      { name: 'Azeite extra virgem', unit: 'l', preco: 55 },
-      { name: 'Pesto', unit: 'kg', preco: 42 },
+      { name:'Farinha batida',      unit:'kg', preco:22   },
+      { name:'Manteiga sem sal',    unit:'kg', preco:36   },
+      { name:'Sal',                 unit:'kg', preco:3    },
+      { name:'Farinha 00',          unit:'kg', preco:18   },
+      { name:'Ovos',                unit:'un', preco:1.20 },
+      { name:'Brócolis',            unit:'kg', preco:12   },
+      { name:'Ricota',              unit:'kg', preco:28   },
+      { name:'Parmesão',            unit:'kg', preco:85   },
+      { name:'Azeite extra virgem', unit:'l',  preco:55   },
+      { name:'Atum fresco',         unit:'kg', preco:120  },
+      { name:'Tomates cereja',      unit:'kg', preco:18   },
+      { name:'Burrata 125g',        unit:'un', preco:9.50 },
     ],
     recipes: [
       {
-        id: 'demo1', category: 'massas', icon: '🍝',
-        name: 'ravioli de brócolis e queijo',
-        subtitle: 'massa fresca artesanal',
-        tags: ['Vegetariano', 'Artesanal'],
-        preco: 68, rendimento: '2 porções',
-        ingredients: [
-          { name: 'Folha Gyoza', qty: '5 un', pkgkg: '—', custo: 1.80, processed: null },
-          {
-            name: 'Recheio Ravioli', qty: '100g', pkgkg: 'R$ 28/kg', custo: 2.80,
-            processed: {
-              label: 'recheio ravioli',
-              items: [
-                { name: 'Brócolis cozido', qty: '200g' },
-                { name: 'Ricota fresca', qty: '150g' },
-                { name: 'Parmesão ralado', qty: '50g' },
-                { name: 'Azeite extra virgem', qty: '20ml' },
-                { name: 'Noz-moscada', qty: 'a gosto' },
-              ]
-            }
-          },
-          { name: 'Pesto', qty: '30g', pkgkg: 'R$ 42/kg', custo: 1.26, processed: null },
-          { name: 'Manteiga', qty: '20g', pkgkg: 'R$ 36/kg', custo: 0.72, processed: null },
+        id:'demo-roux', category:'pratos', icon:'🧈',
+        name:'Roux', subtitle:'base para molhos', tags:['base','clássico'],
+        preco:0, isProcessado:true, rendimentoTotal:1.520, precoInsumo:26.36,
+        ingredients:[
+          { name:'Farinha batida',   qty:1.000, pkgkg:'kg', rendInd:100, custo:22.00, processed:null },
+          { name:'Manteiga sem sal', qty:0.500, pkgkg:'kg', rendInd:100, custo:18.00, processed:null },
+          { name:'Sal',              qty:0.020, pkgkg:'kg', rendInd:100, custo:0.06,  processed:null },
         ]
       },
       {
-        id: 'demo2', category: 'entradas', icon: '🥗',
-        name: 'burrata com tomates confit',
-        subtitle: 'com pesto de manjericão',
-        tags: ['Vegetariano', 'Sem glúten'],
-        preco: 52, rendimento: '2 porções',
-        ingredients: [
-          { name: 'Burrata 125g', qty: '1 un', pkgkg: '—', custo: 9.50, processed: null },
-          { name: 'Tomates cereja', qty: '200g', pkgkg: 'R$ 18/kg', custo: 3.60, processed: null },
-          { name: 'Azeite extra virgem', qty: '30ml', pkgkg: 'R$ 55/l', custo: 1.65, processed: null },
-          {
-            name: 'Pesto de manjericão', qty: '40g', pkgkg: 'R$ 42/kg', custo: 1.68,
-            processed: {
-              label: 'pesto de manjericão',
-              items: [
-                { name: 'Manjericão fresco', qty: '100g' },
-                { name: 'Pinhão torrado', qty: '50g' },
-                { name: 'Parmesão', qty: '60g' },
-                { name: 'Alho', qty: '2 dentes' },
-                { name: 'Azeite', qty: '120ml' },
-              ]
-            }
-          },
+        id:'demo1', category:'massas', icon:'🍝',
+        name:'ravioli de brócolis e queijo', subtitle:'massa fresca artesanal',
+        tags:['Vegetariano','Artesanal'], preco:68, isProcessado:false,
+        ingredients:[
+          { name:'Folha Gyoza',     qty:0.100, pkgkg:'—',        custo:1.80, rendInd:100, processed:null },
+          { name:'Recheio Ravioli', qty:0.100, pkgkg:'R$28/kg',  custo:2.80, rendInd:85,
+            processed:{ label:'recheio ravioli', rendimento:85,
+              items:[{name:'Brócolis',qty:'200g'},{name:'Ricota',qty:'150g'},{name:'Parmesão',qty:'50g'},{name:'Azeite extra virgem',qty:'20ml'},{name:'Noz-moscada',qty:'a gosto'}] } },
+          { name:'Pesto',           qty:0.030, pkgkg:'R$42/kg',  custo:1.26, rendInd:100, processed:null },
+          { name:'Manteiga sem sal',qty:0.020, pkgkg:'R$36/kg',  custo:0.72, rendInd:100, processed:null },
         ]
       },
       {
-        id: 'demo3', category: 'pratos', icon: '🐟',
-        name: 'peixe grelhado com farofa',
-        subtitle: 'atum fresco, farofa de banana e vinagrete',
-        tags: ['Sem glúten', 'Frutos do mar'],
-        preco: 78, rendimento: '1 porção',
-        ingredients: [
-          { name: 'Filé de atum', qty: '200g', pkgkg: 'R$ 120/kg', custo: 24.00, processed: null },
-          {
-            name: 'Farofa de banana', qty: '80g', pkgkg: 'R$ 22/kg', custo: 1.76,
-            processed: {
-              label: 'farofa de banana',
-              items: [
-                { name: 'Farinha de mandioca', qty: '200g' },
-                { name: 'Banana da terra', qty: '2 un' },
-                { name: 'Manteiga', qty: '30g' },
-                { name: 'Cebola caramelizada', qty: '50g' },
-              ]
-            }
-          },
-          { name: 'Vinagrete fresco', qty: '60g', pkgkg: '—', custo: 0.90, processed: null },
+        id:'demo2', category:'entradas', icon:'🥗',
+        name:'burrata com tomates confit', subtitle:'com pesto de manjericão',
+        tags:['Vegetariano','Sem glúten'], preco:52, isProcessado:false,
+        ingredients:[
+          { name:'Burrata 125g',        qty:0.125, pkgkg:'—',       custo:9.50, rendInd:100, processed:null },
+          { name:'Tomates cereja',      qty:0.200, pkgkg:'R$18/kg', custo:3.60, rendInd:100, processed:null },
+          { name:'Azeite extra virgem', qty:0.030, pkgkg:'R$55/l',  custo:1.65, rendInd:100, processed:null },
+          { name:'Pesto de manjericão', qty:0.040, pkgkg:'R$42/kg', custo:1.68, rendInd:78,
+            processed:{ label:'pesto de manjericão', rendimento:78,
+              items:[{name:'Manjericão fresco',qty:'100g'},{name:'Pinhão torrado',qty:'50g'},{name:'Parmesão',qty:'60g'},{name:'Alho',qty:'2 dentes'},{name:'Azeite extra virgem',qty:'120ml'}] } },
         ]
-      }
+      },
     ]
   };
 }
