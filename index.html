@@ -444,57 +444,98 @@ body.admin-mode .admin-only { display: flex; }
 
 .badge-insumo { display: inline-block; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--honey); background: rgba(196,154,108,0.15); border: 0.5px solid var(--honey); border-radius: 4px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
 
-/* ══════════════════════════════════════════
-   MOBILE — layout de app (≤ 640px)
-   Desktop não é afetado
-══════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════════════
+   MOBILE ≤ 640px — layout de app, não afeta desktop
+══════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
 
-  /* admin bar compacta */
-  #admin-bar { padding: 0.4rem 1rem; gap: 0.5rem; }
-  #admin-bar .actions { gap: 5px; }
-  .abtn { font-size: 10px; padding: 3px 8px; }
+  /* ── chrome geral ── */
+  #admin-bar { padding: 0.45rem 1.1rem; }
+  #admin-bar .label { display: none; }
+  #admin-bar .actions { gap: 6px; }
+  .abtn { font-size: 10px; padding: 4px 10px; border-radius: 20px; }
 
-  /* header fixo compacto */
-  header { padding: 1rem 1.25rem 0; }
-  .logo-name { font-size: 22px; }
-  .logo { margin-bottom: 0.75rem; }
-  .nav-btn { font-size: 12px; padding: 0.45rem 0.85rem; }
+  header {
+    padding: 1.1rem 1.25rem 0;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  .logo { margin-bottom: 0.9rem; }
+  .logo-name { font-size: 24px; }
+  .logo-sub  { font-size: 9px; }
 
-  /* main sem padding lateral excessivo */
-  main { padding: 1rem 1rem 5rem; }
+  /* ── nav: pills horizontais rolando ── */
+  nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 6px;
+    padding: 0 0 0.75rem;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    font-size: 12px;
+    padding: 0.35rem 1rem;
+    border: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: var(--white);
+    color: var(--caramel);
+    transition: background .15s, color .15s;
+  }
+  .nav-btn.active {
+    background: var(--dark);
+    color: var(--cream);
+    border-color: var(--dark);
+    font-weight: 500;
+  }
+
+  /* ── main ── */
+  main { padding: 1.25rem 1.1rem 6rem; }
+  .sec-title { display: none; }
 
   /* ── GRID: lista estilo app ── */
   .recipe-grid {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 2px;
+    background: var(--border);
+    border-radius: 16px;
+    overflow: hidden;
   }
 
   .recipe-card {
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 14px;
     border-radius: 0;
     border: none;
-    border-bottom: 0.5px solid var(--border);
     box-shadow: none;
     background: var(--white);
-    gap: 0;
+    padding: 12px 14px;
+    transform: none !important;
   }
-  .recipe-card:hover { transform: none; box-shadow: none; }
   .recipe-card:active { background: var(--light); }
 
+  /* thumb quadrado arredondado */
   .recipe-card-thumb {
-    width: 72px;
-    height: 72px;
-    min-width: 72px;
-    border-radius: 10px;
-    margin: 10px 12px 10px 0;
-    font-size: 28px;
+    width: 58px;
+    height: 58px;
+    min-width: 58px;
+    border-radius: 12px;
+    font-size: 26px;
+    background: var(--light);
+    overflow: hidden;
     flex-shrink: 0;
+    border: none;
   }
+  .recipe-card-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
 
+  /* texto */
   .recipe-card-body {
     flex: 1;
     padding: 0;
@@ -502,123 +543,119 @@ body.admin-mode .admin-only { display: flex; }
   }
   .recipe-card-name {
     font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 2px;
   }
-  .recipe-card-sub { font-size: 11px; }
+  .recipe-card-sub { font-size: 11px; color: var(--caramel); }
 
-  /* seta direita */
+  /* chevron */
   .recipe-card::after {
-    content: '›';
-    font-size: 22px;
-    color: var(--sand);
-    padding: 0 12px;
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--sand);
+    border-top: 1.5px solid var(--sand);
+    transform: rotate(45deg);
     flex-shrink: 0;
+    margin-left: 4px;
   }
 
-  /* section title vira separador de seção */
-  .sec-title {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    padding: 0.6rem 0 0.4rem;
-    border-bottom: 0.5px solid var(--border);
+  /* ── DETAIL ── */
+  #detail-view { padding: 0; }
+
+  .back-btn {
+    position: relative;
+    z-index: 10;
     margin-bottom: 0;
+    padding: 0.5rem 0 0.75rem;
   }
-
-  /* ── DETAIL: foto hero full-width ── */
-  .back-btn { margin-bottom: 0; padding: 0.75rem 0 0.5rem; }
 
   .recipe-hero {
     display: block;
-    gap: 0;
-    margin-bottom: 0;
+    margin-bottom: 1.25rem;
   }
 
+  /* foto hero: sangra nas laterais */
   .recipe-photo-wrap {
-    width: calc(100% + 2rem);
-    margin-left: -1rem;
+    width: calc(100% + 2.2rem);
+    margin-left: -1.1rem;
+    margin-top: -0.5rem;
     border-radius: 0;
     border: none;
-    aspect-ratio: 4/3;
-    font-size: 80px;
-    margin-bottom: 1rem;
+    aspect-ratio: 3/2;
+    font-size: 72px;
+    margin-bottom: 1.25rem;
+    box-shadow: none;
   }
 
-  /* info panel abaixo da foto */
-  .recipe-title-h { font-size: 22px; margin-bottom: 2px; }
+  /* info */
+  .recipe-title-h { font-size: 22px; margin-bottom: 3px; }
   .recipe-sub-h   { font-size: 11px; margin-bottom: 0.75rem; }
-  .tags           { margin-bottom: 0.9rem; }
+  .tags           { margin-bottom: 1rem; gap: 5px; }
 
   .cost-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 7px;
-    margin-bottom: 0.75rem;
+    gap: 8px;
+    margin-bottom: 1rem;
   }
-  .cost-card { padding: 0.6rem 0.75rem; }
-  .cost-card .val { font-size: 17px; }
+  .cost-card { padding: 0.65rem 0.8rem; border-radius: 10px; }
+  .cost-card .lbl { font-size: 9px; }
+  .cost-card .val { font-size: 18px; }
 
-  /* tabela de ingredientes */
-  .ing-table th,
-  .ing-table td { font-size: 12px; padding: 0.5rem 0.35rem; }
+  .section-hdr { margin-top: 1.25rem; }
 
-  /* modal full-screen no mobile */
-  .overlay { padding: 0; align-items: flex-end; }
+  .ing-table th { font-size: 10px; padding: 0.4rem 0.4rem; }
+  .ing-table td { font-size: 13px; padding: 0.55rem 0.4rem; }
+
+  /* ── modal: sobe da parte de baixo ── */
+  .overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
   .modal {
-    border-radius: 18px 18px 0 0;
+    border-radius: 20px 20px 0 0;
     max-height: 92vh;
-    padding: 1.5rem 1.25rem;
     max-width: 100%;
+    padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  .modal::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: var(--sand);
+    border-radius: 2px;
+    margin: 0 auto 1.25rem;
   }
 
-  /* bottom nav — categorias fixas no rodapé */
-  nav {
+  /* ── FAB: botão + nova receita ── */
+  .mob-fab {
+    display: flex;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--white);
-    border-top: 0.5px solid var(--border);
-    z-index: 95;
-    padding: 0.3rem 0 env(safe-area-inset-bottom, 0.3rem);
-    justify-content: space-around;
-    gap: 0;
-    box-shadow: 0 -4px 16px rgba(74,53,32,0.07);
-  }
-  .nav-btn {
-    flex: 1;
-    text-align: center;
-    border-bottom: none;
-    border-top: 2px solid transparent;
-    padding: 0.4rem 0.2rem 0.3rem;
-    font-size: 11px;
-  }
-  .nav-btn.active {
-    border-top-color: var(--caramel);
-    border-bottom: none;
-    color: var(--dark);
-  }
-
-  /* botão + nova receita flutuante */
-  .fab-new {
-    display: flex !important;
-    position: fixed;
-    bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px);
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
     right: 1.25rem;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: var(--caramel);
     color: var(--cream);
     border: none;
     border-radius: 50%;
-    font-size: 24px;
+    font-size: 26px;
+    line-height: 1;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(74,53,32,0.25);
+    box-shadow: 0 4px 20px rgba(74,53,32,0.28);
     z-index: 94;
     cursor: pointer;
   }
+  .mob-fab:active { background: var(--dark); }
+
+  /* esconde .admin-only corretamente no mobile */
+  body:not(.admin-mode) .mob-fab { display: none !important; }
 }
 
 </style>
@@ -801,10 +838,10 @@ body.admin-mode .admin-only { display: flex; }
 
 <!-- datalist global para autocomplete de ingredientes -->
 
-<!-- FAB mobile: nova receita -->
-<button class="fab-new" style="display:none;" onclick="openNewRecipe()" title="nova receita">+</button>
-
 <datalist id="ing-datalist"></datalist>
+<!-- FAB mobile -->
+<button class="mob-fab" style="display:none;" onclick="openNewRecipe()">+</button>
+
 
 <div id="toast"></div>
 
@@ -832,6 +869,7 @@ function doLogin() {
   if (pw === CFG.password) {
     isAdmin = true;
     document.body.classList.add('admin-mode');
+    document.querySelectorAll('.mob-fab').forEach(el => el.style.display = '');
     document.getElementById('admin-bar').style.display = 'flex';
     hideLogin(); loadData();
   } else {
