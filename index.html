@@ -452,85 +452,92 @@ body.admin-mode .admin-only { display: flex; }
 
 
 
+
+
+
 @media (max-width: 640px) {
 
-  /* ── chrome ── */
-  #admin-bar { padding: 0.45rem 1rem; }
-  #admin-bar .label { display: none; }
-  .abtn { font-size: 10px; padding: 4px 10px; border-radius: 20px; }
+  /* admin bar: some, só FAB visível */
+  #admin-bar { display: none !important; }
 
-  header { padding: 1rem 1.25rem 0; }
-  .logo  { margin-bottom: 0.8rem; }
-  .logo-name { font-size: 22px; }
-  .logo-sub  { font-size: 9px; }
+  /* header */
+  header {
+    padding: 1.25rem 1.25rem 0;
+    background: var(--cream);
+  }
+  .logo { margin-bottom: 1rem; }
+  .logo-name { font-size: 26px; }
+  .logo-sub  { font-size: 9px; letter-spacing: 0.2em; }
 
-  /* ── categorias: pills scrolláveis ── */
+  /* categorias: chips */
   nav {
     display: flex;
     gap: 8px;
-    padding-bottom: 0.85rem;
+    padding: 0 0 1rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    flex-wrap: nowrap;
   }
   nav::-webkit-scrollbar { display: none; }
-
   .nav-btn {
     flex-shrink: 0;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 6px 16px;
-    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 7px 18px;
+    border-radius: 100px;
     border: 1.5px solid var(--border);
     border-bottom: 1.5px solid var(--border);
-    background: var(--white);
-    color: var(--caramel);
+    background: transparent;
+    color: var(--dark);
     letter-spacing: 0;
+    transition: background .15s, color .15s, border-color .15s;
   }
   .nav-btn.active {
     background: var(--dark);
     color: var(--cream);
     border-color: var(--dark);
+    font-weight: 500;
   }
 
-  /* ── main ── */
-  main { padding: 1.25rem 1.1rem 5rem; }
+  /* main */
+  main { padding: 1.25rem 1.25rem 6rem; }
   .sec-title { display: none; }
 
-  /* ── GRID → lista app ──────────────────────────
-     Cada card = linha horizontal:
-     foto grande arredondada | info | chevron
-  ─────────────────────────────────────────────── */
+  /* empty state */
+  .empty { font-size: 15px; padding: 4rem 1rem; }
+
+  /* ── CARDS: foto grande + info ── */
   .recipe-grid {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   .recipe-card {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 0;
-    border-radius: 18px;
+    align-items: stretch;
+    border-radius: 20px;
     border: none;
-    box-shadow: 0 1px 6px rgba(74,53,32,0.08);
+    box-shadow: 0 2px 12px rgba(74,53,32,0.09);
     background: var(--white);
-    padding: 0;
     overflow: hidden;
+    min-height: 96px;
     transform: none !important;
-    min-height: 90px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  .recipe-card:active { opacity: 0.85; }
-  .recipe-card:hover  { transform: none !important; box-shadow: 0 1px 6px rgba(74,53,32,0.08) !important; }
+  .recipe-card:active { opacity: 0.8; }
+  .recipe-card:hover  { transform: none !important; box-shadow: 0 2px 12px rgba(74,53,32,0.09) !important; }
 
-  /* foto: quadrada grande, cobre a altura do card */
+  /* foto: quadrada, cobre toda altura */
   .recipe-card-thumb {
-    width: 90px;
-    min-width: 90px;
-    height: 90px;
+    width: 96px;
+    min-width: 96px;
+    height: auto;
     border-radius: 0;
-    font-size: 36px;
+    font-size: 38px;
     background: var(--light);
     flex-shrink: 0;
     display: flex;
@@ -541,92 +548,107 @@ body.admin-mode .admin-only { display: flex; }
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 0;
+    display: block;
   }
 
-  /* divisor vertical entre foto e texto */
-  .recipe-card-thumb::after {
-    display: none;
-  }
-
-  /* info */
+  /* texto */
   .recipe-card-body {
     flex: 1;
-    padding: 0 12px;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     min-width: 0;
   }
   .recipe-card-name {
-    font-size: 14px;
-    font-weight: 500;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 400;
     color: var(--dark);
-    line-height: 1.35;
-    margin-bottom: 4px;
-    white-space: normal;
-    overflow: hidden;
+    line-height: 1.3;
+    margin-bottom: 5px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .recipe-card-sub {
     font-size: 11px;
     color: var(--caramel);
+    line-height: 1.4;
   }
 
-  /* chevron */
+  /* seta */
   .recipe-card::after {
     content: '';
-    width: 7px;
-    height: 7px;
+    align-self: center;
+    width: 8px;
+    height: 8px;
     border-right: 2px solid var(--sand);
     border-top: 2px solid var(--sand);
     transform: rotate(45deg);
     flex-shrink: 0;
-    margin-right: 18px;
+    margin-right: 16px;
   }
 
-  /* ── DETAIL ──────────────────────────────────── */
-  .back-btn { margin-bottom: 0; padding: 0.6rem 0 0.75rem; }
-
-  .recipe-hero {
-    display: block;
-    margin-bottom: 1.1rem;
+  /* ── DETAIL ── */
+  .back-btn {
+    padding: 0.75rem 0;
+    margin-bottom: 0;
+    font-size: 14px;
   }
 
-  /* foto sangra pelas laterais, fica hero */
+  .recipe-hero { display: block; margin-bottom: 0; }
+
   .recipe-photo-wrap {
-    width: calc(100% + 2.2rem);
-    margin-left: -1.1rem;
-    margin-top: -0.5rem;
-    margin-bottom: 1.25rem;
+    width: calc(100% + 2.5rem);
+    margin-left: -1.25rem;
+    margin-bottom: 1.5rem;
     border-radius: 0;
     border: none;
-    aspect-ratio: 16/9;
-    font-size: 80px;
+    aspect-ratio: 4/3;
+    font-size: 90px;
+    box-shadow: none;
   }
 
-  .recipe-title-h { font-size: 21px; }
-  .recipe-sub-h   { font-size: 11px; margin-bottom: 0.75rem; }
+  .recipe-title-h {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .recipe-sub-h   { font-size: 12px; margin-bottom: 0.85rem; }
+  .tags           { gap: 6px; margin-bottom: 1rem; }
+  .tag            { font-size: 11px; padding: 4px 12px; }
 
   .cost-grid {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-bottom: 0.85rem;
+    margin-bottom: 1rem;
   }
-  .cost-card { padding: 0.6rem 0.75rem; border-radius: 12px; }
+  .cost-card {
+    padding: 0.7rem 0.9rem;
+    border-radius: 14px;
+  }
   .cost-card .lbl { font-size: 9px; }
-  .cost-card .val { font-size: 17px; }
+  .cost-card .val { font-size: 18px; }
 
-  .ing-table th { font-size: 10px; padding: 0.4rem 0.35rem; }
-  .ing-table td { font-size: 12px; padding: 0.5rem 0.35rem; }
+  .cmv-wrap { margin-top: 0.75rem; margin-bottom: 1.25rem; }
+
+  .section-hdr { margin-top: 1.5rem; }
+  .ing-table th { font-size: 10px; padding: 0.45rem 0.4rem; }
+  .ing-table td { font-size: 12px; padding: 0.55rem 0.4rem; }
+
+  /* admin botões no detalhe */
+  .admin-only { flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
 
   /* ── modal: sobe da base ── */
-  .overlay { padding: 0; align-items: flex-end; }
+  .overlay { padding: 0 !important; align-items: flex-end !important; }
   .modal {
-    border-radius: 24px 24px 0 0;
-    max-height: 92vh;
-    max-width: 100%;
-    padding: 0 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    border-radius: 24px 24px 0 0 !important;
+    max-height: 93vh !important;
+    max-width: 100% !important;
+    padding: 0 1.25rem calc(2rem + env(safe-area-inset-bottom, 0px)) !important;
   }
+  .modal-title { font-size: 18px; }
   .modal::before {
     content: '';
     display: block;
@@ -639,23 +661,24 @@ body.admin-mode .admin-only { display: flex; }
 
   /* ── FAB admin ── */
   .mob-fab {
-    display: none;
     position: fixed;
     bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
     right: 1.25rem;
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     background: var(--caramel);
     color: var(--cream);
     border: none;
     border-radius: 50%;
-    font-size: 28px;
+    font-size: 30px;
     line-height: 1;
+    display: none;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(74,53,32,0.30);
+    box-shadow: 0 4px 24px rgba(74,53,32,0.32);
     z-index: 94;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
   body.admin-mode .mob-fab { display: flex; }
 }
@@ -841,8 +864,9 @@ body.admin-mode .admin-only { display: flex; }
 <!-- datalist global para autocomplete de ingredientes -->
 
 <datalist id="ing-datalist"></datalist>
-<!-- FAB mobile -->
+<!-- FAB -->
 <button class="mob-fab" onclick="openNewRecipe()">+</button>
+
 
 
 
@@ -1347,8 +1371,27 @@ function toast(msg) {
 function getSampleData() {
   return {
     categories: ['entradas','massas','pratos','sobremesas','drinks'],
-    ingredients: [],
-    recipes: []
+    ingredients: [
+      { name:'Farinha batida',      unit:'kg', preco:22   },
+      { name:'Manteiga sem sal',    unit:'kg', preco:36   },
+      { name:'Brócolis',            unit:'kg', preco:12   },
+      { name:'Ricota',              unit:'kg', preco:28   },
+      { name:'Parmesão',            unit:'kg', preco:85   },
+      { name:'Azeite extra virgem', unit:'l',  preco:55   },
+      { name:'Atum fresco',         unit:'kg', preco:120  },
+      { name:'Tomates cereja',      unit:'kg', preco:18   },
+      { name:'Burrata 125g',        unit:'un', preco:9.50 },
+    ],
+    recipes: [
+      { id:'demo-roux', category:'pratos', icon:'🧈', name:'Roux', subtitle:'base para molhos', tags:['base'], preco:0, isProcessado:true, rendimentoTotal:1.52, precoInsumo:26.36,
+        ingredients:[{name:'Farinha batida',qty:1,pkgkg:'kg',rendInd:100,custo:22,processed:null},{name:'Manteiga sem sal',qty:0.5,pkgkg:'kg',rendInd:100,custo:18,processed:null}] },
+      { id:'demo1', category:'massas', icon:'🍝', name:'ravioli de brócolis e queijo', subtitle:'massa fresca artesanal', tags:['Vegetariano','Artesanal'], preco:68, isProcessado:false,
+        ingredients:[{name:'Folha Gyoza',qty:0.1,pkgkg:'—',custo:1.80,rendInd:100,processed:null},{name:'Recheio Ravioli',qty:0.1,pkgkg:'R$28/kg',custo:2.80,rendInd:85,processed:{label:'recheio ravioli',rendimento:85,items:[{name:'Brócolis',qty:'200g'},{name:'Ricota',qty:'150g'},{name:'Parmesão',qty:'50g'}]}},{name:'Pesto',qty:0.03,pkgkg:'R$42/kg',custo:1.26,rendInd:100,processed:null}] },
+      { id:'demo2', category:'entradas', icon:'🥗', name:'burrata com tomates confit', subtitle:'com pesto de manjericão', tags:['Vegetariano','Sem glúten'], preco:52, isProcessado:false,
+        ingredients:[{name:'Burrata 125g',qty:0.125,pkgkg:'—',custo:9.50,rendInd:100,processed:null},{name:'Tomates cereja',qty:0.2,pkgkg:'R$18/kg',custo:3.60,rendInd:100,processed:null},{name:'Azeite extra virgem',qty:0.03,pkgkg:'R$55/l',custo:1.65,rendInd:100,processed:null}] },
+      { id:'demo3', category:'pratos', icon:'🐟', name:'peixe grelhado', subtitle:'atum fresco, farofa e vinagrete', tags:['Frutos do mar'], preco:78, isProcessado:false,
+        ingredients:[{name:'Atum fresco',qty:0.2,pkgkg:'R$120/kg',custo:24,rendInd:100,processed:null},{name:'Azeite extra virgem',qty:0.02,pkgkg:'R$55/l',custo:1.10,rendInd:100,processed:null}] },
+    ]
   };
 }
 </script>
