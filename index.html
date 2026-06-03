@@ -683,6 +683,23 @@ function getIngPreco(name) {
   const found = (DB.ingredients||[]).find(i => i.name.toLowerCase() === (name||'').toLowerCase());
   return found ? found.preco : null;
 }
+
+// converte qualquer link do Google Drive para URL de imagem direta
+function driveImg(url) {
+  if (!url) return url;
+  // formato: /file/d/FILE_ID/view
+  let m = url.match(/\/file\/d\/([^\/\?]+)/);
+  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+  // formato: id=FILE_ID
+  m = url.match(/[?&]id=([^&]+)/);
+  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+  // formato: /open?id=FILE_ID
+  m = url.match(/\/open\?id=([^&]+)/);
+  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+  // já é URL direta ou outra coisa
+  return url;
+}
+
 function fmtR(v) { return 'R$ ' + (parseFloat(v)||0).toFixed(2).replace('.',','); }
 function calcRendimento(ings) {
   return (ings||[]).reduce((s,i) => s + (parseFloat(i.qty)||0) * ((parseFloat(i.rendInd!=null?i.rendInd:100))/100), 0);
@@ -721,7 +738,7 @@ function renderGrid() {
   }
   grid.innerHTML = recipes.map(r => `
     <div class="recipe-card" onclick="openRecipe('${r.id}')">
-      <div class="recipe-card-thumb">${r.photo?`<img src="${r.photo}" alt="${r.name}">`:(r.icon||'🍽')}</div>
+      <div class="recipe-card-thumb">${r.photo?`<img src="${driveImg(r.photo)}" alt="${r.name}">`:(r.icon||'🍽')}</div>
       <div class="recipe-card-body">
         <div class="recipe-card-name">${r.name}${r.isProcessado?'<span class="badge-insumo">processado</span>':''}</div>
         <div class="recipe-card-sub">${r.subtitle||''}</div>
@@ -792,7 +809,7 @@ function renderDetail() {
   document.getElementById('detail-content').innerHTML = `
     <div class="recipe-hero">
       <div class="recipe-photo-wrap">
-        ${r.photo?`<img src="${r.photo}" alt="${r.name}">`:(r.icon||'🍽')}
+        ${r.photo?`<img src="${driveImg(r.photo)}" alt="${r.name}">`:(r.icon||'🍽')}
         <button class="photo-edit-btn" onclick="editPhoto('${r.id}')">trocar foto</button>
       </div>
       <div>
