@@ -344,6 +344,31 @@ body.admin-mode .photo-edit-btn { display: block; }
 .proc-row:last-child { border-bottom: none; }
 .proc-qty { color: var(--caramel); font-size: 11px; }
 
+/* rendimento bar for processado */
+.proc-rendimento-wrap {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(74,124,89,0.07);
+  border-radius: 6px;
+}
+.proc-rendimento-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.proc-rendimento-label span:last-child { font-weight: 500; }
+.proc-rend-bg { background: rgba(74,124,89,0.2); border-radius: 20px; height: 6px; overflow: hidden; }
+.proc-rend-fill { height: 100%; border-radius: 20px; background: var(--green); transition: width .4s; }
+.proc-rend-fill.low { background: var(--warn); }
+.proc-preco-kg {
+  font-size: 11px;
+  color: var(--caramel);
+  margin-top: 4px;
+  text-align: right;
+}
+
 /* admin inline edit */
 body.admin-mode .editable {
   border-bottom: 1px dashed var(--honey);
@@ -412,7 +437,7 @@ body.admin-mode .admin-only { display: flex; }
 .ing-builder { margin-top: 0.5rem; }
 .ing-builder-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  grid-template-columns: 2fr 1fr 1fr auto;
   gap: 6px;
   margin-bottom: 6px;
   align-items: center;
@@ -434,6 +459,22 @@ body.admin-mode .admin-only { display: flex; }
 .add-ing-btn:hover { background: var(--green-lt); }
 .proc-section { margin-top: 0.5rem; padding: 0.75rem; background: var(--green-lt); border-radius: 8px; border: 0.5px solid rgba(74,124,89,0.3); }
 .proc-section .proc-label { font-size: 11px; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+
+/* processado como insumo */
+.proc-as-insumo {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: #FFF8EE;
+  border: 0.5px solid var(--honey);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--dark);
+}
+.proc-as-insumo label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--caramel); font-size: 11px; letter-spacing: 0.05em; }
+.proc-as-insumo .preco-field { margin-top: 8px; display: none; }
+.proc-as-insumo .preco-field.show { display: flex; align-items: center; gap: 8px; }
+.proc-as-insumo .preco-field label { font-size: 11px; color: var(--caramel); white-space: nowrap; }
+.proc-as-insumo .preco-field input { flex:1; padding: .35rem .6rem; border: .5px solid var(--border); border-radius: 6px; font-size: 12px; outline:none; }
 
 /* ── login ── */
 #login-screen {
@@ -521,6 +562,21 @@ body.admin-mode .admin-only { display: flex; }
 
 /* ── config modal ── */
 #config-url-display { font-size: 12px; color: var(--caramel); word-break: break-all; margin-top: 4px; }
+
+/* badge processado como insumo */
+.badge-insumo {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--honey);
+  background: rgba(196,154,108,0.15);
+  border: 0.5px solid var(--honey);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
 </style>
 </head>
 <body>
@@ -606,22 +662,42 @@ body.admin-mode .admin-only { display: flex; }
         <input type="number" id="r-preco" placeholder="68">
       </div>
       <div class="field">
-        <label>rendimento</label>
-        <input type="text" id="r-rend" placeholder="ex: 2 porções">
+        <label>tags (separadas por vírgula)</label>
+        <input type="text" id="r-tags" placeholder="ex: Vegetariano, Artesanal">
       </div>
     </div>
-    <div class="field">
-      <label>tags (separadas por vírgula)</label>
-      <input type="text" id="r-tags" placeholder="ex: Vegetariano, Artesanal">
+
+    <!-- PROCESSADO TOGGLE -->
+    <div class="field" style="padding:0.7rem;background:var(--green-lt);border-radius:8px;border:0.5px solid rgba(74,124,89,0.3);">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:0;">
+        <input type="checkbox" id="r-is-processado" onchange="toggleRecipeProcessado()">
+        <span style="color:var(--green);font-size:12px;letter-spacing:0.05em;text-transform:uppercase;">Este cadastro é um Processado (semi-acabado)</span>
+      </label>
+      <div id="processado-fields" style="display:none;margin-top:0.75rem;">
+        <div style="font-size:12px;color:var(--green);margin-bottom:0.5rem;">
+          Um processado também aparece como <strong>insumo</strong> na lista de ingredientes, com o preço que você definir.
+        </div>
+        <div class="field-row" style="margin-bottom:0;">
+          <div class="field" style="margin-bottom:0;">
+            <label>rendimento (%)</label>
+            <input type="number" id="r-rendimento-pct" placeholder="ex: 65" min="1" max="100" step="1">
+            <div style="font-size:11px;color:var(--caramel);margin-top:3px;">ex: 65% = 1kg sujo → 650g limpo</div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>preço/kg como insumo (R$)</label>
+            <input type="number" id="r-preco-insumo" placeholder="ex: 45.00" step="0.01">
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="field">
+
+    <div class="field" style="margin-top:1rem;">
       <label>ingredientes</label>
       <div class="ing-builder" id="ing-builder">
-        <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:6px; margin-bottom:4px;">
+        <div style="display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:6px; margin-bottom:4px;">
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">INGREDIENTE</span>
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">QTD</span>
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">UNID</span>
-          <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">CUSTO R$</span>
           <span></span>
         </div>
         <div id="ing-rows"></div>
@@ -639,10 +715,16 @@ body.admin-mode .admin-only { display: flex; }
 <div class="overlay hidden" id="modal-ingredients">
   <div class="modal" style="max-width:640px;">
     <div class="modal-title">ingredientes &amp; preços</div>
-    <p style="font-size:13px;color:var(--caramel);margin-bottom:1.25rem;">Lista mestre de ingredientes. Ao atualizar o preço/kg aqui, todas as receitas recalculam automaticamente.</p>
+    <p style="font-size:13px;color:var(--caramel);margin-bottom:1.25rem;">Lista mestre de ingredientes e insumos. Ao atualizar o preço/kg aqui, todas as receitas recalculam automaticamente.</p>
     <div style="display:flex;gap:8px;margin-bottom:1rem;">
       <input type="text" id="ing-search" placeholder="buscar ingrediente…" style="flex:1;padding:.5rem .75rem;border:.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;">
       <button class="btn primary" onclick="addNewIngredient()">+ novo</button>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;margin-bottom:6px;padding:0 2px;">
+      <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-transform:uppercase;">NOME</span>
+      <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-transform:uppercase;">UNIDADE</span>
+      <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-transform:uppercase;">PREÇO/KG</span>
+      <span></span>
     </div>
     <div id="ing-list" style="max-height:360px;overflow-y:auto;"></div>
     <div class="modal-footer">
@@ -680,7 +762,6 @@ body.admin-mode .admin-only { display: flex; }
 // ── CONFIG ──────────────────────────────────────────────────────────────────
 const CFG_KEY = 'nola_config';
 let CFG = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
-// defaults
 if (!CFG.password) CFG.password = 'nola2024';
 if (!CFG.scriptUrl) CFG.scriptUrl = '';
 
@@ -696,7 +777,6 @@ let ingRowCount = 0;
 window.addEventListener('DOMContentLoaded', () => {
   const pw = document.getElementById('login-pw');
   pw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  // If no script URL configured, show hint in login
   if (!CFG.scriptUrl) {
     document.getElementById('login-err').textContent = 'Primeiro configure a URL do Apps Script após fazer login como admin.';
   }
@@ -715,14 +795,8 @@ function doLogin() {
     document.getElementById('login-err').textContent = 'Senha incorreta.';
   }
 }
-function enterGuest() {
-  isAdmin = false;
-  hideLogin();
-  loadData();
-}
-function hideLogin() {
-  document.getElementById('login-screen').classList.add('hidden');
-}
+function enterGuest() { isAdmin = false; hideLogin(); loadData(); }
+function hideLogin() { document.getElementById('login-screen').classList.add('hidden'); }
 function doLogout() {
   isAdmin = false;
   document.body.classList.remove('admin-mode');
@@ -766,6 +840,17 @@ async function pushData(payload) {
   }
 }
 
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+// Busca o preço/kg de um ingrediente na lista mestre
+function getIngPreco(name) {
+  if (!name) return null;
+  const found = (DB.ingredients || []).find(i => i.name.toLowerCase() === name.toLowerCase());
+  return found ? found.preco : null;
+}
+
+// Formata valor monetário
+function fmtR(v) { return 'R$ ' + (parseFloat(v) || 0).toFixed(2).replace('.', ','); }
+
 // ── INIT UI ──────────────────────────────────────────────────────────────────
 function initUI() {
   if (!DB.categories.length) DB.categories = ['entradas','massas','pratos','sobremesas','drinks'];
@@ -801,7 +886,7 @@ function renderGrid() {
     <div class="recipe-card" onclick="openRecipe('${r.id}')">
       <div class="recipe-card-thumb">${r.photo ? `<img src="${r.photo}" alt="${r.name}">` : (r.icon || '🍽')}</div>
       <div class="recipe-card-body">
-        <div class="recipe-card-name">${r.name}</div>
+        <div class="recipe-card-name">${r.name}${r.isProcessado ? '<span class="badge-insumo">processado</span>' : ''}</div>
         <div class="recipe-card-sub">${r.subtitle || ''}</div>
       </div>
     </div>
@@ -819,7 +904,17 @@ function openRecipe(id) {
 function renderDetail() {
   const r = currentRecipe;
   const ings = r.ingredients || [];
-  const totalCost = ings.reduce((s, i) => s + (parseFloat(i.custo) || 0), 0);
+
+  // Calcula custo de cada ingrediente buscando preço/kg da lista mestre
+  // e aplica rendimento do processado se houver
+  const ingsComCusto = ings.map(ing => {
+    const precoKg = getIngPreco(ing.name);
+    // custo: usa o custo salvo (ou calcula se tiver preço/kg e qty em kg)
+    let custo = parseFloat(ing.custo) || 0;
+    return { ...ing, custo, precoKg };
+  });
+
+  const totalCost = ingsComCusto.reduce((s, i) => s + i.custo, 0);
   const cmv = r.preco ? Math.round((totalCost / r.preco) * 100) : 0;
   const cmvOk = cmv <= 35;
 
@@ -829,28 +924,73 @@ function renderDetail() {
       <button class="btn danger" onclick="deleteRecipe('${r.id}')">🗑 excluir</button>
     </div>` : '';
 
-  const ingRows = ings.map((ing, idx) => {
+  // Monta linhas da tabela — um ingrediente por linha, qtd e preço/kg ao lado
+  const ingRows = ingsComCusto.map((ing, idx) => {
     const hasProc = ing.processed && ing.processed.items && ing.processed.items.length;
-    const nameCell = hasProc
-      ? `<button class="proc-toggle" id="ptog-${idx}" onclick="toggleProc(${idx})">
-           <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
-           ${ing.name}
-         </button>`
-      : ing.name;
-    const subHtml = hasProc ? `
-      <div class="proc-sub" id="psub-${idx}">
-        <div class="proc-inner">
-          <div class="proc-title">${ing.processed.label || 'processado'}</div>
-          ${ing.processed.items.map(si => `<div class="proc-row"><span>${si.name}</span><span class="proc-qty">${si.qty}</span></div>`).join('')}
-        </div>
-      </div>` : '';
+    const precoKgDisplay = ing.precoKg != null
+      ? fmtR(ing.precoKg) + '/kg'
+      : (ing.pkgkg || '—');
+
+    // Se é processado, mostra o toggle e a sub-receita com barra de rendimento
+    if (hasProc) {
+      const rendPct = ing.processed.rendimento || 100;
+      const rendOk = rendPct >= 60;
+      // custo/kg do processado calculado a partir do custo e da qtd em kg
+      const procPrecoKg = ing.precoKg != null ? fmtR(ing.precoKg) + '/kg' : (ing.pkgkg || '—');
+
+      const subItems = ing.processed.items.map(si =>
+        `<div class="proc-row"><span>${si.name}</span><span class="proc-qty">${si.qty || ''}</span></div>`
+      ).join('');
+
+      const rendBar = `
+        <div class="proc-rendimento-wrap">
+          <div class="proc-rendimento-label">
+            <span>rendimento</span>
+            <span>${rendPct}%</span>
+          </div>
+          <div class="proc-rend-bg"><div class="proc-rend-fill ${rendOk ? '' : 'low'}" style="width:${Math.min(rendPct,100)}%"></div></div>
+          <div class="proc-preco-kg">${procPrecoKg}</div>
+        </div>`;
+
+      return `<tr>
+        <td>
+          <button class="proc-toggle" id="ptog-${idx}" onclick="toggleProc(${idx})">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+            ${ing.name}
+          </button>
+          <div class="proc-sub" id="psub-${idx}">
+            <div class="proc-inner">
+              <div class="proc-title">${ing.processed.label || 'processado'}</div>
+              ${subItems}
+              ${rendBar}
+            </div>
+          </div>
+        </td>
+        <td>${ing.qty || ''}</td>
+        <td>${precoKgDisplay}</td>
+        <td>${fmtR(ing.custo)}</td>
+      </tr>`;
+    }
+
     return `<tr>
-      <td>${nameCell}${subHtml}</td>
+      <td>${ing.name}</td>
       <td>${ing.qty || ''}</td>
-      <td>${ing.pkgkg || '—'}</td>
-      <td>R$ ${parseFloat(ing.custo || 0).toFixed(2).replace('.',',')}</td>
+      <td>${precoKgDisplay}</td>
+      <td>${fmtR(ing.custo)}</td>
     </tr>`;
   }).join('');
+
+  // Cards de custo — sem rendimento para prato normal
+  // Se for processado, mostra a barra de rendimento
+  const rendimentoCard = r.isProcessado
+    ? `<div class="cost-card">
+        <div class="lbl">Rendimento</div>
+        <div class="val" style="font-size:16px;">${r.rendimentoPct || '—'}%</div>
+        <div style="margin-top:6px;">
+          <div class="cmv-bg"><div class="cmv-fill${(r.rendimentoPct || 0) < 60 ? ' warn' : ''}" style="width:${Math.min(r.rendimentoPct||0,100)}%"></div></div>
+        </div>
+       </div>`
+    : '';
 
   document.getElementById('detail-content').innerHTML = `
     <div class="recipe-hero">
@@ -859,19 +999,20 @@ function renderDetail() {
         <button class="photo-edit-btn" onclick="editPhoto('${r.id}')">trocar foto</button>
       </div>
       <div>
-        <div class="recipe-title-h">${r.name}</div>
+        <div class="recipe-title-h">${r.name}${r.isProcessado ? '<span class="badge-insumo" style="font-size:11px;vertical-align:middle;margin-left:8px;">processado</span>' : ''}</div>
         <div class="recipe-sub-h">${r.subtitle || ''}</div>
         <div class="tags">${(r.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
         <div class="cost-grid">
           <div class="cost-card"><div class="lbl">CMV</div><div class="val ${cmvOk ? 'ok' : 'warn'}">${cmv}%</div></div>
           <div class="cost-card"><div class="lbl">Preço venda</div><div class="val">R$ ${r.preco || '—'}</div></div>
           <div class="cost-card"><div class="lbl">Custo total</div><div class="val">R$ ${totalCost.toFixed(2).replace('.',',')}</div></div>
-          <div class="cost-card"><div class="lbl">Rendimento</div><div class="val" style="font-size:13px;">${r.rendimento || '—'}</div></div>
+          ${rendimentoCard}
         </div>
         <div class="cmv-wrap">
           <div class="cmv-row"><span>CMV</span><span>${cmv}%</span></div>
           <div class="cmv-bg"><div class="cmv-fill ${cmvOk ? '' : 'warn'}" style="width:${Math.min(cmv,100)}%"></div></div>
         </div>
+        ${r.isProcessado && r.precoInsumo ? `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;background:#FFF8EE;border-radius:6px;border:0.5px solid var(--honey);font-size:12px;color:var(--caramel);">Como insumo: <strong style="color:var(--dark);">${fmtR(r.precoInsumo)}/kg</strong></div>` : ''}
         ${adminEditBtns}
       </div>
     </div>
@@ -885,7 +1026,7 @@ function renderDetail() {
           ${ingRows}
           <tr class="ing-total-row">
             <td colspan="3">custo total</td>
-            <td>R$ ${totalCost.toFixed(2).replace('.',',')}</td>
+            <td>${fmtR(totalCost)}</td>
           </tr>
         </tbody>
       </table>
@@ -901,10 +1042,7 @@ function toggleProc(idx) {
   sub.classList.toggle('open');
 }
 
-function goBack() {
-  currentRecipe = null;
-  showView('grid');
-}
+function goBack() { currentRecipe = null; showView('grid'); }
 
 function showView(v) {
   document.getElementById('grid-view').style.display  = v === 'grid'   ? 'block' : 'none';
@@ -912,14 +1050,22 @@ function showView(v) {
 }
 
 // ── RECIPE MODAL ─────────────────────────────────────────────────────────────
+function toggleRecipeProcessado() {
+  const isProc = document.getElementById('r-is-processado').checked;
+  document.getElementById('processado-fields').style.display = isProc ? 'block' : 'none';
+}
+
 function openNewRecipe() {
   editingRecipeId = null;
   document.getElementById('modal-recipe-title').textContent = 'nova receita';
   document.getElementById('r-name').value = '';
   document.getElementById('r-sub').value = '';
   document.getElementById('r-preco').value = '';
-  document.getElementById('r-rend').value = '';
   document.getElementById('r-tags').value = '';
+  document.getElementById('r-is-processado').checked = false;
+  document.getElementById('r-rendimento-pct').value = '';
+  document.getElementById('r-preco-insumo').value = '';
+  document.getElementById('processado-fields').style.display = 'none';
   populateCatSelect();
   document.getElementById('ing-rows').innerHTML = '';
   ingRowCount = 0;
@@ -935,8 +1081,11 @@ function openEditRecipe(id) {
   document.getElementById('r-name').value = r.name || '';
   document.getElementById('r-sub').value = r.subtitle || '';
   document.getElementById('r-preco').value = r.preco || '';
-  document.getElementById('r-rend').value = r.rendimento || '';
   document.getElementById('r-tags').value = (r.tags || []).join(', ');
+  document.getElementById('r-is-processado').checked = !!r.isProcessado;
+  document.getElementById('r-rendimento-pct').value = r.rendimentoPct || '';
+  document.getElementById('r-preco-insumo').value = r.precoInsumo || '';
+  document.getElementById('processado-fields').style.display = r.isProcessado ? 'block' : 'none';
   populateCatSelect(r.category);
   document.getElementById('ing-rows').innerHTML = '';
   ingRowCount = 0;
@@ -951,32 +1100,53 @@ function populateCatSelect(selected) {
   ).join('');
 }
 
+// Autocomplete simples para nome do ingrediente
+function buildIngAutocomplete(inputEl) {
+  const names = (DB.ingredients || []).map(i => i.name);
+  inputEl.setAttribute('list', `ing-datalist`);
+  // Cria datalist se não existir
+  if (!document.getElementById('ing-datalist')) {
+    const dl = document.createElement('datalist');
+    dl.id = 'ing-datalist';
+    names.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      dl.appendChild(opt);
+    });
+    document.body.appendChild(dl);
+  }
+}
+
 function addIngRow(data = {}) {
   const idx = ingRowCount++;
   const div = document.createElement('div');
   div.className = 'ing-builder-row';
   div.id = `ing-row-${idx}`;
-  
-  // Build processed sub-section HTML
+
   const procItems = (data.processed && data.processed.items) ? data.processed.items : [];
   const procLabel = (data.processed && data.processed.label) ? data.processed.label : '';
+  const procRend  = (data.processed && data.processed.rendimento) ? data.processed.rendimento : 100;
   const isProc = procItems.length > 0;
 
   div.innerHTML = `
-    <input type="text"   id="iname-${idx}"  placeholder="ingrediente" value="${data.name || ''}">
-    <input type="text"   id="iqty-${idx}"   placeholder="100g"       value="${data.qty || ''}">
-    <input type="text"   id="ipkg-${idx}"   placeholder="R$/kg"      value="${data.pkgkg || ''}">
-    <input type="number" id="icusto-${idx}" placeholder="0,00"       value="${data.custo || ''}" step="0.01">
+    <input type="text"   id="iname-${idx}"  list="ing-datalist" placeholder="ingrediente" value="${data.name || ''}" onchange="onIngNameChange(${idx})">
+    <input type="text"   id="iqty-${idx}"   placeholder="ex: 200g"  value="${data.qty || ''}">
+    <input type="text"   id="ipkg-${idx}"   placeholder="unid/obs"  value="${data.pkgkg || ''}" style="font-size:11px;">
     <button class="rm-ing" onclick="removeIngRow(${idx})" title="remover">×</button>
     <div style="grid-column:1/-1;margin-top:2px;">
       <label style="font-size:11px;color:var(--caramel);display:flex;align-items:center;gap:6px;cursor:pointer;">
         <input type="checkbox" id="iproc-${idx}" ${isProc ? 'checked' : ''} onchange="toggleProcSection(${idx})">
-        é um processado (receita dentro de receita)
+        é um processado (sub-receita)
       </label>
       <div id="proc-sec-${idx}" style="display:${isProc ? 'block' : 'none'};margin-top:6px;">
         <div class="proc-section">
           <div class="proc-label">sub-receita do processado</div>
           <input type="text" id="iproclabel-${idx}" placeholder="nome do processado" value="${procLabel}" style="width:100%;padding:.4rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;margin-bottom:6px;outline:none;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <label style="font-size:11px;color:var(--green);white-space:nowrap;">rendimento %</label>
+            <input type="number" id="iprocrend-${idx}" placeholder="ex: 65" value="${procRend}" min="1" max="100" step="1" style="width:80px;padding:.35rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;outline:none;">
+            <span style="font-size:11px;color:var(--caramel);">% de aproveitamento</span>
+          </div>
           <div id="proc-items-${idx}">
             ${procItems.map((pi, pi_idx) => procItemRow(idx, pi_idx, pi)).join('')}
           </div>
@@ -986,11 +1156,51 @@ function addIngRow(data = {}) {
     </div>
   `;
   document.getElementById('ing-rows').appendChild(div);
+
+  // Garante datalist
+  if (!document.getElementById('ing-datalist')) {
+    const dl = document.createElement('datalist');
+    dl.id = 'ing-datalist';
+    (DB.ingredients || []).forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n.name;
+      dl.appendChild(opt);
+    });
+    document.body.appendChild(dl);
+  }
+}
+
+// Quando o nome do ingrediente muda, busca o preço na lista e preenche custo automaticamente
+function onIngNameChange(idx) {
+  const nameEl = document.getElementById(`iname-${idx}`);
+  const name = nameEl?.value?.trim();
+  if (!name) return;
+  const found = (DB.ingredients || []).find(i => i.name.toLowerCase() === name.toLowerCase());
+  if (found && found.preco) {
+    // Tenta calcular custo automaticamente se tiver qty em kg/g
+    const qtyEl = document.getElementById(`iqty-${idx}`);
+    const qty = qtyEl?.value?.trim() || '';
+    let custoAuto = null;
+    const matchKg = qty.match(/([\d.,]+)\s*kg/i);
+    const matchG  = qty.match(/([\d.,]+)\s*g\b/i);
+    const matchL  = qty.match(/([\d.,]+)\s*l\b/i);
+    const matchMl = qty.match(/([\d.,]+)\s*ml\b/i);
+    if (matchKg)  custoAuto = parseFloat(matchKg[1].replace(',','.'))  * found.preco;
+    else if (matchG)  custoAuto = (parseFloat(matchG[1].replace(',','.'))  / 1000) * found.preco;
+    else if (matchL)  custoAuto = parseFloat(matchL[1].replace(',','.'))  * found.preco;
+    else if (matchMl) custoAuto = (parseFloat(matchMl[1].replace(',','.')) / 1000) * found.preco;
+
+    // Preenche unidade/obs com o preço/kg do insumo
+    const pkgEl = document.getElementById(`ipkg-${idx}`);
+    if (pkgEl && !pkgEl.value) {
+      pkgEl.value = found.unit ? `${found.unit}` : 'kg';
+    }
+  }
 }
 
 function procItemRow(ingIdx, itemIdx, data = {}) {
   return `<div id="pi-${ingIdx}-${itemIdx}" style="display:flex;gap:6px;margin-bottom:4px;">
-    <input type="text" id="piname-${ingIdx}-${itemIdx}" placeholder="ingrediente" value="${data.name || ''}" style="flex:2;padding:.35rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;outline:none;">
+    <input type="text" id="piname-${ingIdx}-${itemIdx}" list="ing-datalist" placeholder="ingrediente" value="${data.name || ''}" style="flex:2;padding:.35rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;outline:none;">
     <input type="text" id="piqty-${ingIdx}-${itemIdx}"  placeholder="qtd" value="${data.qty || ''}" style="flex:1;padding:.35rem .6rem;border:.5px solid rgba(74,124,89,.3);border-radius:6px;font-size:12px;background:white;outline:none;">
     <button class="rm-ing" onclick="removeProcItem(${ingIdx},${itemIdx})">×</button>
   </div>`;
@@ -1024,15 +1234,30 @@ function collectIngredients() {
   const result = [];
   rows.forEach(row => {
     const idx = row.id.replace('ing-row-', '');
-    const name   = document.getElementById(`iname-${idx}`)?.value?.trim();
+    const name = document.getElementById(`iname-${idx}`)?.value?.trim();
     if (!name) return;
-    const qty    = document.getElementById(`iqty-${idx}`)?.value?.trim();
-    const pkgkg  = document.getElementById(`ipkg-${idx}`)?.value?.trim();
-    const custo  = parseFloat(document.getElementById(`icusto-${idx}`)?.value) || 0;
+    const qty   = document.getElementById(`iqty-${idx}`)?.value?.trim();
+    const pkgkg = document.getElementById(`ipkg-${idx}`)?.value?.trim();
+
+    // Calcula custo automaticamente se possível
+    const precoKg = getIngPreco(name);
+    let custo = 0;
+    if (precoKg && qty) {
+      const matchKg = qty.match(/([\d.,]+)\s*kg/i);
+      const matchG  = qty.match(/([\d.,]+)\s*g\b/i);
+      const matchL  = qty.match(/([\d.,]+)\s*l\b/i);
+      const matchMl = qty.match(/([\d.,]+)\s*ml\b/i);
+      if (matchKg)  custo = parseFloat(matchKg[1].replace(',','.'))  * precoKg;
+      else if (matchG)  custo = (parseFloat(matchG[1].replace(',','.'))  / 1000) * precoKg;
+      else if (matchL)  custo = parseFloat(matchL[1].replace(',','.'))  * precoKg;
+      else if (matchMl) custo = (parseFloat(matchMl[1].replace(',','.')) / 1000) * precoKg;
+    }
+
     const isProc = document.getElementById(`iproc-${idx}`)?.checked;
     let processed = null;
     if (isProc) {
       const label = document.getElementById(`iproclabel-${idx}`)?.value?.trim() || '';
+      const rendimento = parseInt(document.getElementById(`iprocrend-${idx}`)?.value) || 100;
       const items = [];
       document.querySelectorAll(`#proc-items-${idx} > div`).forEach(piRow => {
         const piMatch = piRow.id.match(/^pi-\d+-(\d+)$/);
@@ -1042,7 +1267,7 @@ function collectIngredients() {
         const piQty  = document.getElementById(`piqty-${idx}-${piIdx}`)?.value?.trim();
         if (piName) items.push({ name: piName, qty: piQty || '' });
       });
-      processed = { label, items };
+      processed = { label, items, rendimento };
     }
     result.push({ name, qty, pkgkg, custo, processed });
   });
@@ -1050,19 +1275,26 @@ function collectIngredients() {
 }
 
 async function saveRecipe() {
-  const name  = document.getElementById('r-name').value.trim();
+  const name = document.getElementById('r-name').value.trim();
   if (!name) { toast('Nome da receita é obrigatório.'); return; }
+
+  const isProcessado  = document.getElementById('r-is-processado').checked;
+  const rendimentoPct = isProcessado ? (parseInt(document.getElementById('r-rendimento-pct').value) || 100) : null;
+  const precoInsumo   = isProcessado ? (parseFloat(document.getElementById('r-preco-insumo').value) || 0) : null;
+
   const recipe = {
-    id:         editingRecipeId || `r_${Date.now()}`,
+    id:          editingRecipeId || `r_${Date.now()}`,
     name,
-    subtitle:   document.getElementById('r-sub').value.trim(),
-    category:   document.getElementById('r-cat').value,
-    preco:      parseFloat(document.getElementById('r-preco').value) || 0,
-    rendimento: document.getElementById('r-rend').value.trim(),
-    tags:       document.getElementById('r-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    subtitle:    document.getElementById('r-sub').value.trim(),
+    category:    document.getElementById('r-cat').value,
+    preco:       parseFloat(document.getElementById('r-preco').value) || 0,
+    tags:        document.getElementById('r-tags').value.split(',').map(t => t.trim()).filter(Boolean),
     ingredients: collectIngredients(),
     icon: '🍽',
     photo: editingRecipeId ? ((DB.recipes || []).find(r => r.id === editingRecipeId)?.photo || null) : null,
+    isProcessado,
+    rendimentoPct,
+    precoInsumo,
   };
 
   if (editingRecipeId) {
@@ -1071,6 +1303,17 @@ async function saveRecipe() {
   } else {
     if (!DB.recipes) DB.recipes = [];
     DB.recipes.push(recipe);
+  }
+
+  // Se for processado, sincroniza na lista de ingredientes
+  if (isProcessado && precoInsumo) {
+    if (!DB.ingredients) DB.ingredients = [];
+    const existingIdx = DB.ingredients.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+    const ingEntry = { name, unit: 'kg', preco: precoInsumo };
+    if (existingIdx >= 0) DB.ingredients[existingIdx] = ingEntry;
+    else DB.ingredients.push(ingEntry);
+    // Salva lista de ingredientes também
+    pushData({ action: 'saveIngredients', ingredients: DB.ingredients });
   }
 
   closeModal('modal-recipe');
@@ -1136,6 +1379,11 @@ async function saveAllIngredients() {
     if (name) updated.push({ name, unit, preco });
   });
   DB.ingredients = updated;
+  // Atualiza datalist
+  const dl = document.getElementById('ing-datalist');
+  if (dl) {
+    dl.innerHTML = updated.map(i => `<option value="${i.name}">`).join('');
+  }
   closeModal('modal-ingredients');
   const ok = await pushData({ action: 'saveIngredients', ingredients: updated });
   toast(ok ? 'Ingredientes salvos ✓' : 'Salvo localmente');
@@ -1202,6 +1450,9 @@ function getSampleData() {
       { name: 'Parmesão', unit: 'kg', preco: 85 },
       { name: 'Azeite extra virgem', unit: 'l', preco: 55 },
       { name: 'Pesto', unit: 'kg', preco: 42 },
+      { name: 'Atum fresco', unit: 'kg', preco: 120 },
+      { name: 'Tomates cereja', unit: 'kg', preco: 18 },
+      { name: 'Burrata 125g', unit: 'un', preco: 9.50 },
     ],
     recipes: [
       {
@@ -1209,17 +1460,18 @@ function getSampleData() {
         name: 'ravioli de brócolis e queijo',
         subtitle: 'massa fresca artesanal',
         tags: ['Vegetariano', 'Artesanal'],
-        preco: 68, rendimento: '2 porções',
+        preco: 68, isProcessado: false,
         ingredients: [
           { name: 'Folha Gyoza', qty: '5 un', pkgkg: '—', custo: 1.80, processed: null },
           {
             name: 'Recheio Ravioli', qty: '100g', pkgkg: 'R$ 28/kg', custo: 2.80,
             processed: {
               label: 'recheio ravioli',
+              rendimento: 85,
               items: [
-                { name: 'Brócolis cozido', qty: '200g' },
-                { name: 'Ricota fresca', qty: '150g' },
-                { name: 'Parmesão ralado', qty: '50g' },
+                { name: 'Brócolis', qty: '200g' },
+                { name: 'Ricota', qty: '150g' },
+                { name: 'Parmesão', qty: '50g' },
                 { name: 'Azeite extra virgem', qty: '20ml' },
                 { name: 'Noz-moscada', qty: 'a gosto' },
               ]
@@ -1234,7 +1486,7 @@ function getSampleData() {
         name: 'burrata com tomates confit',
         subtitle: 'com pesto de manjericão',
         tags: ['Vegetariano', 'Sem glúten'],
-        preco: 52, rendimento: '2 porções',
+        preco: 52, isProcessado: false,
         ingredients: [
           { name: 'Burrata 125g', qty: '1 un', pkgkg: '—', custo: 9.50, processed: null },
           { name: 'Tomates cereja', qty: '200g', pkgkg: 'R$ 18/kg', custo: 3.60, processed: null },
@@ -1243,12 +1495,13 @@ function getSampleData() {
             name: 'Pesto de manjericão', qty: '40g', pkgkg: 'R$ 42/kg', custo: 1.68,
             processed: {
               label: 'pesto de manjericão',
+              rendimento: 78,
               items: [
                 { name: 'Manjericão fresco', qty: '100g' },
                 { name: 'Pinhão torrado', qty: '50g' },
                 { name: 'Parmesão', qty: '60g' },
                 { name: 'Alho', qty: '2 dentes' },
-                { name: 'Azeite', qty: '120ml' },
+                { name: 'Azeite extra virgem', qty: '120ml' },
               ]
             }
           },
@@ -1259,13 +1512,14 @@ function getSampleData() {
         name: 'peixe grelhado com farofa',
         subtitle: 'atum fresco, farofa de banana e vinagrete',
         tags: ['Sem glúten', 'Frutos do mar'],
-        preco: 78, rendimento: '1 porção',
+        preco: 78, isProcessado: false,
         ingredients: [
-          { name: 'Filé de atum', qty: '200g', pkgkg: 'R$ 120/kg', custo: 24.00, processed: null },
+          { name: 'Atum fresco', qty: '200g', pkgkg: 'R$ 120/kg', custo: 24.00, processed: null },
           {
             name: 'Farofa de banana', qty: '80g', pkgkg: 'R$ 22/kg', custo: 1.76,
             processed: {
               label: 'farofa de banana',
+              rendimento: 92,
               items: [
                 { name: 'Farinha de mandioca', qty: '200g' },
                 { name: 'Banana da terra', qty: '2 un' },
@@ -1276,7 +1530,20 @@ function getSampleData() {
           },
           { name: 'Vinagrete fresco', qty: '60g', pkgkg: '—', custo: 0.90, processed: null },
         ]
-      }
+      },
+      {
+        id: 'demo4', category: 'pratos', icon: '🐠',
+        name: 'Atum limpo (processado)',
+        subtitle: 'atum fresco limpo e porcionado',
+        tags: ['Frutos do mar'],
+        preco: 0,
+        isProcessado: true,
+        rendimentoPct: 50,
+        precoInsumo: 240,
+        ingredients: [
+          { name: 'Atum fresco', qty: '1 kg', pkgkg: 'R$ 120/kg', custo: 120.00, processed: null },
+        ]
+      },
     ]
   };
 }
