@@ -687,16 +687,15 @@ function getIngPreco(name) {
 // converte qualquer link do Google Drive para URL de imagem direta
 function driveImg(url) {
   if (!url) return url;
-  // formato: /file/d/FILE_ID/view
-  let m = url.match(/\/file\/d\/([^\/\?]+)/);
-  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
-  // formato: id=FILE_ID
-  m = url.match(/[?&]id=([^&]+)/);
-  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
-  // formato: /open?id=FILE_ID
-  m = url.match(/\/open\?id=([^&]+)/);
-  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
-  // já é URL direta ou outra coisa
+  let id = null;
+  // /file/d/FILE_ID/
+  let m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) id = m[1];
+  // ?id=FILE_ID ou &id=FILE_ID
+  if (!id) { m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/); if (m) id = m[1]; }
+  // /open?id=FILE_ID
+  if (!id) { m = url.match(/\/open\?id=([a-zA-Z0-9_-]+)/); if (m) id = m[1]; }
+  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
   return url;
 }
 
