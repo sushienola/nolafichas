@@ -29,6 +29,8 @@ input, textarea, select { font-family: inherit; }
   --white:   #FFFFFF;
   --shadow:  0 4px 24px rgba(74,53,32,0.10);
   --radius:  12px;
+  --proc-color: #6B5CA5;
+  --proc-lt:    #F0EEF8;
 }
 
 /* ── base ── */
@@ -266,6 +268,22 @@ body.admin-mode .photo-edit-btn { display: block; }
 .cmv-fill { height: 100%; border-radius: 20px; transition: width .4s; background: var(--green); }
 .cmv-fill.warn { background: var(--warn); }
 
+/* rendimento da receita */
+.rendimento-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--light);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+}
+.rendimento-card .rend-icon { font-size: 18px; }
+.rendimento-card .rend-info { flex: 1; }
+.rendimento-card .rend-lbl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--caramel); }
+.rendimento-card .rend-val { font-size: 14px; font-weight: 500; color: var(--dark); }
+
 /* ingredients table */
 .section-hdr {
   font-size: 10px;
@@ -298,12 +316,12 @@ body.admin-mode .photo-edit-btn { display: block; }
 .ing-table td:last-child { font-weight: 500; color: var(--dark); }
 .ing-total-row td { font-weight: 500; color: var(--dark); font-size: 13px; border-top: 1px solid var(--border); border-bottom: none; }
 
-/* processed */
+/* processado inline toggle (detalhe da receita) */
 .proc-toggle {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--green);
+  color: var(--proc-color);
   background: none;
   border: none;
   font-size: 13px;
@@ -320,8 +338,8 @@ body.admin-mode .photo-edit-btn { display: block; }
 }
 .proc-sub.open { max-height: 600px; }
 .proc-inner {
-  background: var(--green-lt);
-  border-left: 2px solid var(--green);
+  background: var(--proc-lt);
+  border-left: 2px solid var(--proc-color);
   border-radius: 0 8px 8px 0;
   margin: 6px 0 4px 6px;
   padding: 0.6rem 0.9rem;
@@ -330,7 +348,7 @@ body.admin-mode .photo-edit-btn { display: block; }
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--proc-color);
   margin-bottom: 0.4rem;
 }
 .proc-row {
@@ -339,7 +357,7 @@ body.admin-mode .photo-edit-btn { display: block; }
   font-size: 12px;
   color: var(--dark);
   padding: 3px 0;
-  border-bottom: 0.5px solid rgba(74,124,89,0.15);
+  border-bottom: 0.5px solid rgba(107,92,165,0.15);
 }
 .proc-row:last-child { border-bottom: none; }
 .proc-qty { color: var(--caramel); font-size: 11px; }
@@ -347,21 +365,36 @@ body.admin-mode .photo-edit-btn { display: block; }
 .proc-rendimento-wrap {
   margin-top: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: rgba(74,124,89,0.07);
+  background: rgba(107,92,165,0.07);
   border-radius: 6px;
 }
 .proc-rendimento-label {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
-  color: var(--green);
+  color: var(--proc-color);
   margin-bottom: 4px;
 }
 .proc-rendimento-label span:last-child { font-weight: 500; }
-.proc-rend-bg { background: rgba(74,124,89,0.2); border-radius: 20px; height: 6px; overflow: hidden; }
-.proc-rend-fill { height: 100%; border-radius: 20px; background: var(--green); transition: width .4s; }
+.proc-rend-bg { background: rgba(107,92,165,0.2); border-radius: 20px; height: 6px; overflow: hidden; }
+.proc-rend-fill { height: 100%; border-radius: 20px; background: var(--proc-color); transition: width .4s; }
 .proc-rend-fill.low { background: var(--warn); }
 .proc-preco-kg { font-size: 11px; color: var(--caramel); margin-top: 4px; text-align: right; }
+
+/* badge processado no nome do ingrediente */
+.badge-proc-ing {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--proc-color);
+  background: var(--proc-lt);
+  border: 0.5px solid var(--proc-color);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
 
 body.admin-mode .editable { border-bottom: 1px dashed var(--honey); outline: none; cursor: text; min-width: 40px; display: inline-block; }
 body.admin-mode .editable:focus { background: rgba(196,154,108,0.08); border-radius: 3px; }
@@ -404,11 +437,36 @@ body.admin-mode .admin-only { display: flex; }
 .btn.primary:hover { background: var(--dark); border-color: var(--dark); }
 .btn.danger { background: var(--warn-lt); color: var(--warn); border-color: var(--warn); }
 
+/* row de ingrediente no modal — agora com 6 colunas: nome | qtd | unid | rend% | processado? | × */
 .ing-builder { margin-top: 0.5rem; }
 .rm-ing { background: none; border: none; color: var(--caramel); font-size: 18px; line-height: 1; padding: 0 4px; }
 .rm-ing:hover { color: var(--warn); }
 .add-ing-btn { font-size: 12px; color: var(--green); background: none; border: 1px dashed var(--green); border-radius: 6px; padding: 5px 12px; margin-top: 4px; transition: background .15s; }
 .add-ing-btn:hover { background: var(--green-lt); }
+
+/* checkbox "processado" inline na row de ingrediente */
+.proc-check-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.proc-check-wrap input[type=checkbox] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--proc-color);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* info do processado resolvido (preço/kg buscado) */
+.ing-proc-hint {
+  font-size: 10px;
+  color: var(--proc-color);
+  margin-top: 2px;
+  display: none;
+}
+.ing-proc-hint.visible { display: block; }
 
 .proc-box { margin-top: 0.75rem; background: var(--white); border: 0.5px solid rgba(74,124,89,0.3); border-radius: 8px; padding: 0.75rem 1rem; }
 .proc-box-title { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-bottom: 0.35rem; font-weight: 500; }
@@ -444,23 +502,96 @@ body.admin-mode .admin-only { display: flex; }
 
 .badge-insumo { display: inline-block; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--honey); background: rgba(196,154,108,0.15); border: 0.5px solid var(--honey); border-radius: 4px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
 
+/* ── painel "como fazer o processado" no detalhe ── */
+.proc-detail-block {
+  background: var(--proc-lt);
+  border: 0.5px solid rgba(107,92,165,0.25);
+  border-radius: 10px;
+  margin-top: 1.5rem;
+}
+.proc-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+.proc-detail-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.proc-detail-icon { font-size: 18px; }
+.proc-detail-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: var(--proc-color);
+}
+.proc-detail-sub {
+  font-size: 11px;
+  color: var(--caramel);
+  margin-top: 1px;
+}
+.proc-detail-toggle-icon {
+  color: var(--proc-color);
+  transition: transform .2s;
+  font-size: 14px;
+}
+.proc-detail-toggle-icon.open { transform: rotate(180deg); }
+.proc-detail-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease;
+}
+.proc-detail-body.open { max-height: 1200px; }
+.proc-detail-inner { padding: 0 1rem 1rem; }
 
+.proc-section-title {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--proc-color);
+  border-bottom: 0.5px solid rgba(107,92,165,0.2);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.proc-ing-table { width: 100%; border-collapse: collapse; margin-bottom: 0.75rem; }
+.proc-ing-table th {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--proc-color); text-align: left; padding: 0.3rem 0.4rem;
+  border-bottom: 0.5px solid rgba(107,92,165,0.2);
+}
+.proc-ing-table th:not(:first-child) { text-align: right; }
+.proc-ing-table td {
+  font-size: 12px; padding: 0.45rem 0.4rem;
+  border-bottom: 0.5px solid rgba(107,92,165,0.08);
+  color: var(--dark);
+}
+.proc-ing-table td:not(:first-child) { text-align: right; color: var(--caramel); }
+.proc-ing-table td:last-child { font-weight: 500; color: var(--dark); }
+.proc-ing-total td { border-top: 1px solid rgba(107,92,165,0.2); border-bottom: none; font-weight: 500; }
+
+.proc-rend-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 0.75rem;
+}
+.proc-rend-card {
+  background: white;
+  border: 0.5px solid rgba(107,92,165,0.2);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  text-align: center;
+}
+.proc-rend-card .prc-lbl { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--proc-color); margin-bottom: 4px; }
+.proc-rend-card .prc-val { font-size: 15px; font-weight: 500; color: var(--dark); }
 
 /* ══════════════════════════════════════════════════════
    MOBILE ≤ 640px — layout de app, não afeta desktop
 ══════════════════════════════════════════════════════ */
-
-
-
-
-
-
-
-
-
-
-
-
 @media (max-width: 640px) {
 
   body { background: #fff; }
@@ -687,6 +818,14 @@ body.admin-mode .admin-only { display: flex; }
   .cmv-fill { background: #4A7C59; }
   .cmv-fill.warn { background: #B5551A; }
 
+  .rendimento-card {
+    background: #FAF7F2;
+    border: none;
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
   .section-hdr {
     font-size: 10px;
     color: #C49A6C;
@@ -712,6 +851,10 @@ body.admin-mode .admin-only { display: flex; }
   .ing-total-row td { border-top-color: #E8E0D0; }
 
   .admin-only { margin-top: 1rem; flex-wrap: wrap; gap: 8px; }
+
+  /* painel processado no detalhe — mobile ajustes */
+  .proc-detail-block { margin-top: 1.25rem; border-radius: 16px; }
+  .proc-rend-summary { grid-template-columns: 1fr 1fr 1fr; }
 
   /* ── modal sobe da base ── */
   .overlay { padding: 0 !important; align-items: flex-end !important; }
@@ -753,8 +896,17 @@ body.admin-mode .admin-only { display: flex; }
     cursor: pointer;
   }
   body.admin-mode .mob-fab { display: flex; }
-}
 
+  /* header de ingredientes no modal: 5 colunas estreitas no mobile */
+  #ing-header-row {
+    grid-template-columns: 2fr 70px 60px 50px 24px 24px !important;
+    gap: 4px !important;
+  }
+  #ing-rows > div {
+    grid-template-columns: 2fr 70px 60px 50px 24px 24px !important;
+    gap: 4px !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -837,6 +989,17 @@ body.admin-mode .admin-only { display: flex; }
         <input type="text" id="r-tags" placeholder="ex: Vegetariano, Artesanal">
       </div>
     </div>
+    <!-- rendimento da receita -->
+    <div class="field-row" id="row-rendimento">
+      <div class="field">
+        <label>rendimento (porções / unidades)</label>
+        <input type="number" id="r-rendimento-porcoes" placeholder="ex: 4" step="0.5" min="0">
+      </div>
+      <div class="field">
+        <label>peso total (kg, opcional)</label>
+        <input type="number" id="r-rendimento-peso" placeholder="ex: 0.800" step="0.001" min="0">
+      </div>
+    </div>
     <div class="field" id="row-tags-proc" style="display:none;">
       <label>tags (separadas por vírgula)</label>
       <input type="text" id="r-tags-proc" placeholder="ex: base, molho">
@@ -871,11 +1034,13 @@ body.admin-mode .admin-only { display: flex; }
     <div class="field" style="margin-top:1rem;">
       <label>ingredientes</label>
       <div class="ing-builder" id="ing-builder">
-        <div style="display:grid;grid-template-columns:2fr 90px 80px 70px auto;gap:6px;margin-bottom:4px;padding:0 2px;">
+        <!-- cabeçalho das colunas -->
+        <div id="ing-header-row" style="display:grid;grid-template-columns:2fr 90px 80px 70px 32px auto;gap:6px;margin-bottom:4px;padding:0 2px;align-items:center;">
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">INGREDIENTE</span>
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">QTD (kg)</span>
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;">UNID/OBS</span>
           <span style="font-size:10px;color:var(--caramel);letter-spacing:.08em;text-align:right;">REND %</span>
+          <span style="font-size:10px;color:var(--proc-color);letter-spacing:.08em;text-align:center;" title="Marque se este ingrediente for um processado nosso">PROC</span>
           <span></span>
         </div>
         <div id="ing-rows"></div>
@@ -933,16 +1098,13 @@ body.admin-mode .admin-only { display: flex; }
   </div>
 </div>
 
-<!-- datalist global para autocomplete de ingredientes -->
-
+<!-- datalist global para autocomplete de ingredientes (insumos normais) -->
 <datalist id="ing-datalist"></datalist>
+<!-- datalist para processados -->
+<datalist id="proc-datalist"></datalist>
+
 <!-- FAB -->
 <button class="mob-fab" onclick="openNewRecipe()">+</button>
-
-
-
-
-
 
 <div id="toast"></div>
 
@@ -970,7 +1132,7 @@ function doLogin() {
   if (pw === CFG.password) {
     isAdmin = true;
     document.body.classList.add('admin-mode');
-        document.getElementById('admin-bar').style.display = 'flex';
+    document.getElementById('admin-bar').style.display = 'flex';
     hideLogin(); loadData();
   } else {
     document.getElementById('login-err').textContent = 'Senha incorreta.';
@@ -999,21 +1161,33 @@ async function pushData(payload) {
   } catch(e) { toast('Erro ao salvar na Sheet.'); return false; }
 }
 
+// ── busca preço de insumo normal (lista mestre) ──
 function getIngPreco(name) {
   const found = (DB.ingredients||[]).find(i => i.name.toLowerCase() === (name||'').toLowerCase());
   return found ? found.preco : null;
+}
+
+// ── busca receita processada pelo nome ──
+function getProcessadoByName(name) {
+  return (DB.recipes||[]).find(r => r.isProcessado && r.name.toLowerCase() === (name||'').toLowerCase()) || null;
+}
+
+// ── preço/kg de um ingrediente: processado tem prioridade, depois lista mestre ──
+function getPrecoKg(name, isProc) {
+  if (isProc) {
+    const proc = getProcessadoByName(name);
+    if (proc && proc.precoInsumo) return proc.precoInsumo;
+  }
+  return getIngPreco(name);
 }
 
 // converte qualquer link do Google Drive para URL de imagem direta
 function driveImg(url) {
   if (!url) return url;
   let id = null;
-  // /file/d/FILE_ID/
   let m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (m) id = m[1];
-  // ?id=FILE_ID ou &id=FILE_ID
   if (!id) { m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/); if (m) id = m[1]; }
-  // /open?id=FILE_ID
   if (!id) { m = url.match(/\/open\?id=([a-zA-Z0-9_-]+)/); if (m) id = m[1]; }
   if (id) return `https://lh3.googleusercontent.com/d/${id}`;
   return url;
@@ -1024,17 +1198,20 @@ function calcRendimento(ings) {
   return (ings||[]).reduce((s,i) => s + (parseFloat(i.qty)||0) * ((parseFloat(i.rendInd!=null?i.rendInd:100))/100), 0);
 }
 
-// ── reconstrói o datalist sempre que DB.ingredients mudar ──
+// ── reconstrói datalists ──
 function rebuildDatalist() {
+  // insumos normais
   const dl = document.getElementById('ing-datalist');
-  if (!dl) return;
-  dl.innerHTML = (DB.ingredients||[]).map(i => `<option value="${i.name}">`).join('');
+  if (dl) dl.innerHTML = (DB.ingredients||[]).map(i => `<option value="${i.name}">`).join('');
+  // processados
+  const pdl = document.getElementById('proc-datalist');
+  if (pdl) pdl.innerHTML = (DB.recipes||[]).filter(r=>r.isProcessado).map(r => `<option value="${r.name}">`).join('');
 }
 
 function initUI() {
   if (!DB.categories.length) DB.categories = ['entradas','massas','pratos','sobremesas','drinks'];
   currentCat = DB.categories[0];
-  rebuildDatalist();   // ← popula lista suspensa de ingredientes
+  rebuildDatalist();
   renderNav();
   renderGrid();
 }
@@ -1071,22 +1248,120 @@ function openRecipe(id) {
   renderDetail(); showView('detail');
 }
 
+// ── Monta painel "como fazer" para cada processado usado na receita ──
+function buildProcDetailBlocks(ings) {
+  const blocks = [];
+  (ings||[]).forEach((ing, idx) => {
+    if (!ing.isProcessado) return;
+    const proc = getProcessadoByName(ing.name);
+    if (!proc) return;
+
+    const procIngs = proc.ingredients || [];
+    const totalCost = procIngs.reduce((s,i) => s + (parseFloat(i.custo)||0), 0);
+    const rendTotal = calcRendimento(procIngs);
+    const custoKg   = proc.precoInsumo || (rendTotal > 0 ? totalCost / rendTotal : 0);
+
+    const ingRows = procIngs.map(pi => {
+      const precoKgPi = pi.isProcessado ? (getProcessadoByName(pi.name)?.precoInsumo || getIngPreco(pi.name)) : getIngPreco(pi.name);
+      return `<tr>
+        <td>${pi.name}${pi.isProcessado ? '<span class="badge-proc-ing">proc</span>' : ''}</td>
+        <td>${pi.qty||''}</td>
+        <td>${precoKgPi != null ? fmtR(precoKgPi)+'/kg' : (pi.pkgkg||'—')}</td>
+        <td>${fmtR(pi.custo)}</td>
+      </tr>`;
+    }).join('');
+
+    blocks.push(`
+      <div class="proc-detail-block" id="procblock-${idx}">
+        <div class="proc-detail-header" onclick="toggleProcBlock(${idx})">
+          <div class="proc-detail-header-left">
+            <span class="proc-detail-icon">🔮</span>
+            <div>
+              <div class="proc-detail-title">Como fazer: ${proc.name}</div>
+              <div class="proc-detail-sub">usado como ingrediente nesta receita · ${ing.qty ? ing.qty+' kg' : ''}</div>
+            </div>
+          </div>
+          <span class="proc-detail-toggle-icon" id="procblock-icon-${idx}">▾</span>
+        </div>
+        <div class="proc-detail-body" id="procblock-body-${idx}">
+          <div class="proc-detail-inner">
+            <div class="proc-section-title">ingredientes do processado</div>
+            <table class="proc-ing-table">
+              <thead><tr><th>ingrediente</th><th>qtd.</th><th>preço/kg</th><th>custo</th></tr></thead>
+              <tbody>
+                ${ingRows}
+                <tr class="proc-ing-total"><td colspan="3">custo total</td><td>${fmtR(totalCost)}</td></tr>
+              </tbody>
+            </table>
+            <div class="proc-rend-summary">
+              <div class="proc-rend-card">
+                <div class="prc-lbl">Custo total</div>
+                <div class="prc-val">R$ ${totalCost.toFixed(2).replace('.',',')}</div>
+              </div>
+              <div class="proc-rend-card">
+                <div class="prc-lbl">Rendimento</div>
+                <div class="prc-val">${rendTotal > 0 ? rendTotal.toFixed(3)+' kg' : '—'}</div>
+              </div>
+              <div class="proc-rend-card">
+                <div class="prc-lbl">Custo/kg</div>
+                <div class="prc-val">${fmtR(custoKg)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`);
+  });
+  return blocks.join('');
+}
+
+function toggleProcBlock(idx) {
+  const body = document.getElementById(`procblock-body-${idx}`);
+  const icon = document.getElementById(`procblock-icon-${idx}`);
+  if (!body) return;
+  body.classList.toggle('open');
+  if (icon) icon.classList.toggle('open');
+}
+
 function renderDetail() {
   const r    = currentRecipe;
   const ings = r.ingredients||[];
-  const ingsComCusto = ings.map(ing => ({ ...ing, custo: parseFloat(ing.custo)||0, precoKg: getIngPreco(ing.name) }));
-  const totalCost    = ingsComCusto.reduce((s,i)=>s+i.custo, 0);
-  const cmv          = r.preco ? Math.round((totalCost/r.preco)*100) : 0;
-  const cmvOk        = cmv <= 35;
+
+  // custo: para cada ingrediente, usa getPrecoKg respeitando flag isProcessado
+  const ingsComCusto = ings.map(ing => {
+    const precoKg = getPrecoKg(ing.name, ing.isProcessado);
+    const custo   = precoKg != null ? (parseFloat(ing.qty)||0) * precoKg : (parseFloat(ing.custo)||0);
+    return { ...ing, custo, precoKg };
+  });
+  const totalCost = ingsComCusto.reduce((s,i)=>s+(i.custo||0), 0);
+  const cmv       = r.preco ? Math.round((totalCost/r.preco)*100) : 0;
+  const cmvOk     = cmv <= 35;
 
   const adminBtns = isAdmin ? `<div style="display:flex;gap:8px;margin-top:1rem;" class="admin-only">
     <button class="btn" onclick="openEditRecipe('${r.id}')">✏ editar receita</button>
     <button class="btn danger" onclick="deleteRecipe('${r.id}')">🗑 excluir</button>
   </div>` : '';
 
+  // rendimento card
+  let rendimentoHtml = '';
+  if (r.rendimentoPorcoes || r.rendimentoPeso) {
+    const parts = [];
+    if (r.rendimentoPorcoes) parts.push(`${r.rendimentoPorcoes} porção${r.rendimentoPorcoes != 1 ? 'ões' : ''}`);
+    if (r.rendimentoPeso)    parts.push(`${r.rendimentoPeso} kg`);
+    rendimentoHtml = `<div class="rendimento-card">
+      <span class="rend-icon">⚖️</span>
+      <div class="rend-info">
+        <div class="rend-lbl">Rendimento da receita</div>
+        <div class="rend-val">${parts.join(' · ')}</div>
+      </div>
+    </div>`;
+  }
+
   const ingRows = ingsComCusto.map((ing,idx) => {
-    const hasProc       = ing.processed?.items?.length;
-    const precoKgDisplay = ing.precoKg!=null ? fmtR(ing.precoKg)+'/kg' : (ing.pkgkg||'—');
+    const precoKgDisplay = ing.precoKg != null ? fmtR(ing.precoKg)+'/kg' : (ing.pkgkg||'—');
+    const procBadge = ing.isProcessado ? '<span class="badge-proc-ing">proc</span>' : '';
+
+    // processados inline (legado proc toggle — mantido para compatibilidade)
+    const hasProc = ing.processed?.items?.length;
     if (hasProc) {
       const rendPct = ing.processed.rendimento||100;
       const rendOk  = rendPct >= 60;
@@ -1099,7 +1374,7 @@ function renderDetail() {
       return `<tr><td>
         <button class="proc-toggle" id="ptog-${idx}" onclick="toggleProc(${idx})">
           <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
-          ${ing.name}
+          ${ing.name}${procBadge}
         </button>
         <div class="proc-sub" id="psub-${idx}"><div class="proc-inner">
           <div class="proc-title">${ing.processed.label||'processado'}</div>
@@ -1107,9 +1382,10 @@ function renderDetail() {
         </div></div>
       </td><td>${ing.qty||''}</td><td>${precoKgDisplay}</td><td>${fmtR(ing.custo)}</td></tr>`;
     }
-    return `<tr><td>${ing.name}</td><td>${ing.qty||''}</td><td>${precoKgDisplay}</td><td>${fmtR(ing.custo)}</td></tr>`;
+    return `<tr><td>${ing.name}${procBadge}</td><td>${ing.qty||''}</td><td>${precoKgDisplay}</td><td>${fmtR(ing.custo)}</td></tr>`;
   }).join('');
 
+  // cost cards
   let costCards = '';
   if (r.isProcessado) {
     const rendTotal = calcRendimento(ings);
@@ -1125,6 +1401,9 @@ function renderDetail() {
       <div class="cost-card"><div class="lbl">Custo total</div><div class="val">R$ ${totalCost.toFixed(2).replace('.',',')}</div></div>`;
   }
 
+  // painéis "como fazer" dos processados usados
+  const procDetailBlocks = buildProcDetailBlocks(ingsComCusto);
+
   document.getElementById('detail-content').innerHTML = `
     <div class="recipe-hero">
       <div class="recipe-photo-wrap">
@@ -1135,6 +1414,7 @@ function renderDetail() {
         <div class="recipe-title-h">${r.name}${r.isProcessado?'<span class="badge-insumo" style="font-size:11px;vertical-align:middle;margin-left:8px;">processado</span>':''}</div>
         <div class="recipe-sub-h">${r.subtitle||''}</div>
         <div class="tags">${(r.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        ${rendimentoHtml}
         <div class="cost-grid">${costCards}</div>
         ${!r.isProcessado?`<div class="cmv-wrap"><div class="cmv-row"><span>CMV</span><span>${cmv}%</span></div><div class="cmv-bg"><div class="cmv-fill${cmvOk?'':' warn'}" style="width:${Math.min(cmv,100)}%"></div></div></div>`:''}
         ${adminBtns}
@@ -1146,6 +1426,7 @@ function renderDetail() {
         <thead><tr><th>ingrediente</th><th>qtd.</th><th>preço/kg</th><th>custo</th></tr></thead>
         <tbody>${ingRows}<tr class="ing-total-row"><td colspan="3">custo total</td><td>${fmtR(totalCost)}</td></tr></tbody>
       </table>
+      ${procDetailBlocks}
     </div>`;
 }
 
@@ -1163,22 +1444,23 @@ function showView(v) {
 function toggleRecipeProcessado() {
   const isProc = document.getElementById('r-is-processado').checked;
   document.getElementById('row-preco-venda').style.display    = isProc ? 'none'  : 'grid';
+  document.getElementById('row-rendimento').style.display     = isProc ? 'none'  : 'grid';
   document.getElementById('row-tags-proc').style.display      = isProc ? 'block' : 'none';
   document.getElementById('processado-fields').style.display  = isProc ? 'block' : 'none';
   if (isProc) recalcProcessado();
 }
 
 function recalcProcessado() {
-  const ings     = _collectSilent();
+  const ings      = _collectSilent();
   const rendTotal = calcRendimento(ings);
-  const rendEl   = document.getElementById('pm-rend');
+  const rendEl    = document.getElementById('pm-rend');
   if (rendEl) rendEl.textContent = rendTotal > 0 ? rendTotal.toFixed(3)+' kg' : '— kg';
   if (!_custoKgEditado) {
     const custoEl = document.getElementById('r-preco-insumo');
     const hintEl  = document.getElementById('pm-custo-hint');
     let cmvTotal  = 0;
     ings.forEach(ing => {
-      const p = getIngPreco(ing.name);
+      const p = getPrecoKg(ing.name, ing.isProcessado);
       if (p) cmvTotal += (parseFloat(ing.qty)||0) * p;
     });
     if (rendTotal > 0 && cmvTotal > 0) {
@@ -1196,13 +1478,36 @@ function onCustoManual() {
   if (hintEl) hintEl.textContent = document.getElementById('r-preco-insumo').value ? 'valor editado manualmente' : 'calculado pelo CMV ÷ rendimento';
 }
 
+// ── quando muda o nome do ingrediente: detecta se é processado e atualiza hint ──
+function onIngNameChange(idx) {
+  const nameEl  = document.getElementById(`iname-${idx}`);
+  const checkEl = document.getElementById(`iproc-${idx}`);
+  const hintEl  = document.getElementById(`ihint-${idx}`);
+  if (!nameEl || !checkEl || !hintEl) return;
+  const name = nameEl.value.trim();
+  const proc = getProcessadoByName(name);
+  if (proc) {
+    // auto-marcar como processado se encontrar na lista
+    checkEl.checked = true;
+    const precoKg = proc.precoInsumo;
+    hintEl.textContent = precoKg ? `processado · R$ ${precoKg.toFixed(2).replace('.',',')}/kg` : 'processado · sem preço cadastrado';
+    hintEl.classList.add('visible');
+  } else {
+    hintEl.classList.remove('visible');
+  }
+  onIngChange(idx);
+}
+
 function openNewRecipe() {
   editingRecipeId = null; _custoKgEditado = false;
   document.getElementById('modal-recipe-title').textContent = 'nova receita';
-  ['r-name','r-sub','r-preco','r-tags','r-tags-proc','r-preco-insumo'].forEach(id => { document.getElementById(id).value=''; });
+  ['r-name','r-sub','r-preco','r-tags','r-tags-proc','r-preco-insumo','r-rendimento-porcoes','r-rendimento-peso'].forEach(id => {
+    document.getElementById(id).value='';
+  });
   document.getElementById('r-is-processado').checked         = false;
   document.getElementById('processado-fields').style.display = 'none';
   document.getElementById('row-preco-venda').style.display   = 'grid';
+  document.getElementById('row-rendimento').style.display    = 'grid';
   document.getElementById('row-tags-proc').style.display     = 'none';
   populateCatSelect();
   document.getElementById('ing-rows').innerHTML = '';
@@ -1219,6 +1524,8 @@ function openEditRecipe(id) {
   document.getElementById('r-name').value                    = r.name||'';
   document.getElementById('r-sub').value                     = r.subtitle||'';
   document.getElementById('r-preco').value                   = r.preco||'';
+  document.getElementById('r-rendimento-porcoes').value      = r.rendimentoPorcoes||'';
+  document.getElementById('r-rendimento-peso').value         = r.rendimentoPeso||'';
   const tagsStr = (r.tags||[]).join(', ');
   document.getElementById('r-tags').value                    = tagsStr;
   document.getElementById('r-tags-proc').value               = tagsStr;
@@ -1226,6 +1533,7 @@ function openEditRecipe(id) {
   document.getElementById('r-preco-insumo').value            = r.precoInsumo||'';
   document.getElementById('processado-fields').style.display = r.isProcessado ? 'block' : 'none';
   document.getElementById('row-preco-venda').style.display   = r.isProcessado ? 'none'  : 'grid';
+  document.getElementById('row-rendimento').style.display    = r.isProcessado ? 'none'  : 'grid';
   document.getElementById('row-tags-proc').style.display     = r.isProcessado ? 'block' : 'none';
   populateCatSelect(r.category);
   document.getElementById('ing-rows').innerHTML = '';
@@ -1241,22 +1549,68 @@ function populateCatSelect(selected) {
   ).join('');
 }
 
-// linha: nome | qtd(kg) | unid/obs | rend% | ×
-// custo NÃO aparece aqui — é calculado automaticamente por qty × preço/kg
+// linha: nome | qtd(kg) | unid/obs | rend% | [PROC checkbox] | ×
 function addIngRow(data = {}) {
-  const idx     = ingRowCount++;
-  const div     = document.createElement('div');
-  div.id        = `ing-row-${idx}`;
-  div.style.cssText = 'display:grid;grid-template-columns:2fr 90px 80px 70px auto;gap:6px;margin-bottom:6px;align-items:center;';
-  const rendInd = data.rendInd != null ? data.rendInd : 100;
-  const qty     = data.qty     != null ? data.qty     : '';
+  const idx      = ingRowCount++;
+  const div      = document.createElement('div');
+  div.id         = `ing-row-${idx}`;
+  div.style.cssText = 'display:grid;grid-template-columns:2fr 90px 80px 70px 32px auto;gap:6px;margin-bottom:6px;align-items:start;';
+  const rendInd  = data.rendInd  != null ? data.rendInd  : 100;
+  const qty      = data.qty      != null ? data.qty      : '';
+  const isProc   = !!data.isProcessado;
+
+  // hint do processado (nome do processado resolvido)
+  let hintText = '';
+  if (isProc) {
+    const proc = getProcessadoByName(data.name||'');
+    if (proc && proc.precoInsumo) hintText = `processado · R$ ${proc.precoInsumo.toFixed(2).replace('.',',')}/kg`;
+    else if (proc) hintText = 'processado · sem preço cadastrado';
+  }
+
   div.innerHTML = `
-    <input type="text"   id="iname-${idx}" list="ing-datalist" placeholder="ingrediente" value="${data.name||''}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
+    <div style="display:flex;flex-direction:column;">
+      <input type="text"   id="iname-${idx}" list="${isProc ? 'proc-datalist' : 'ing-datalist'}" placeholder="${isProc ? 'processado' : 'ingrediente'}" value="${data.name||''}" oninput="onIngNameChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
+      <div class="ing-proc-hint${hintText ? ' visible' : ''}" id="ihint-${idx}">${hintText}</div>
+    </div>
     <input type="number" id="iqty-${idx}"  placeholder="1.000" step="0.001" value="${qty}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
     <input type="text"   id="ipkg-${idx}"  placeholder="unid/obs" value="${data.pkgkg||''}" style="padding:.4rem .6rem;font-size:11px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);">
-    <input type="number" id="irend-${idx}" placeholder="100" step="1" min="1" max="500" value="${rendInd}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);text-align:right;" title="rendimento individual deste ingrediente (%)">
+    <input type="number" id="irend-${idx}" placeholder="100" step="1" min="1" max="500" value="${rendInd}" oninput="onIngChange(${idx})" style="padding:.4rem .6rem;font-size:12px;border:.5px solid var(--border);border-radius:6px;outline:none;background:var(--white);color:var(--dark);text-align:right;" title="rendimento individual (%)">
+    <div class="proc-check-wrap" title="Marque se for um processado nosso">
+      <input type="checkbox" id="iproc-${idx}" ${isProc ? 'checked' : ''} onchange="onProcCheckChange(${idx})">
+    </div>
     <button class="rm-ing" onclick="removeIngRow(${idx})" title="remover">×</button>`;
   document.getElementById('ing-rows').appendChild(div);
+}
+
+// quando o checkbox "processado" é alterado manualmente
+function onProcCheckChange(idx) {
+  const checkEl = document.getElementById(`iproc-${idx}`);
+  const nameEl  = document.getElementById(`iname-${idx}`);
+  const hintEl  = document.getElementById(`ihint-${idx}`);
+  if (!checkEl || !nameEl) return;
+  const isProc = checkEl.checked;
+  // troca o datalist
+  nameEl.setAttribute('list', isProc ? 'proc-datalist' : 'ing-datalist');
+  nameEl.placeholder = isProc ? 'processado' : 'ingrediente';
+  // atualiza hint
+  if (isProc) {
+    const name = nameEl.value.trim();
+    const proc = getProcessadoByName(name);
+    if (proc && proc.precoInsumo) {
+      hintEl.textContent = `processado · R$ ${proc.precoInsumo.toFixed(2).replace('.',',')}/kg`;
+      hintEl.classList.add('visible');
+    } else if (proc) {
+      hintEl.textContent = 'processado · sem preço cadastrado';
+      hintEl.classList.add('visible');
+    } else {
+      hintEl.textContent = '';
+      hintEl.classList.remove('visible');
+    }
+  } else {
+    hintEl.textContent = '';
+    hintEl.classList.remove('visible');
+  }
+  onIngChange(idx);
 }
 
 function onIngChange(idx) {
@@ -1271,19 +1625,20 @@ function _collectSilent() {
   return Array.from(document.querySelectorAll('#ing-rows > div')).map(row => {
     const idx = row.id.replace('ing-row-','');
     return {
-      name:    document.getElementById(`iname-${idx}`)?.value?.trim()||'',
-      qty:     parseFloat(document.getElementById(`iqty-${idx}`)?.value)||0,
-      pkgkg:   document.getElementById(`ipkg-${idx}`)?.value?.trim()||'',
-      rendInd: parseFloat(document.getElementById(`irend-${idx}`)?.value)||100,
+      name:        document.getElementById(`iname-${idx}`)?.value?.trim()||'',
+      qty:         parseFloat(document.getElementById(`iqty-${idx}`)?.value)||0,
+      pkgkg:       document.getElementById(`ipkg-${idx}`)?.value?.trim()||'',
+      rendInd:     parseFloat(document.getElementById(`irend-${idx}`)?.value)||100,
+      isProcessado: !!(document.getElementById(`iproc-${idx}`)?.checked),
     };
   });
 }
 
-// custo calculado aqui, não digitado pelo usuário
+// custo calculado automaticamente: processados buscam precoInsumo, insumos normais buscam lista mestre
 function collectIngredients() {
   return _collectSilent().filter(i => i.name).map(i => {
-    const precoKg = getIngPreco(i.name);
-    const custo   = precoKg ? i.qty * precoKg : 0;
+    const precoKg = getPrecoKg(i.name, i.isProcessado);
+    const custo   = precoKg != null ? i.qty * precoKg : 0;
     return { ...i, custo, processed: null };
   });
 }
@@ -1309,18 +1664,20 @@ async function saveRecipe() {
   }
 
   const recipe = {
-    id:              editingRecipeId || `r_${Date.now()}`,
+    id:                editingRecipeId || `r_${Date.now()}`,
     name,
-    subtitle:        document.getElementById('r-sub').value.trim(),
-    category:        document.getElementById('r-cat').value,
-    preco:           isProcessado ? 0 : (parseFloat(document.getElementById('r-preco').value)||0),
+    subtitle:          document.getElementById('r-sub').value.trim(),
+    category:          document.getElementById('r-cat').value,
+    preco:             isProcessado ? 0 : (parseFloat(document.getElementById('r-preco').value)||0),
     tags,
-    ingredients:     ings,
-    icon:            '🍽',
-    photo:           editingRecipeId ? ((DB.recipes||[]).find(r=>r.id===editingRecipeId)?.photo||null) : null,
+    ingredients:       ings,
+    icon:              '🍽',
+    photo:             editingRecipeId ? ((DB.recipes||[]).find(r=>r.id===editingRecipeId)?.photo||null) : null,
     isProcessado,
-    rendimentoTotal: rendTotal,
+    rendimentoTotal:   rendTotal,
     precoInsumo,
+    rendimentoPorcoes: isProcessado ? null : (parseFloat(document.getElementById('r-rendimento-porcoes').value)||null),
+    rendimentoPeso:    isProcessado ? null : (parseFloat(document.getElementById('r-rendimento-peso').value)||null),
   };
 
   if (editingRecipeId) {
@@ -1330,6 +1687,7 @@ async function saveRecipe() {
     (DB.recipes=DB.recipes||[]).push(recipe);
   }
 
+  // se for processado, atualiza lista mestre de ingredientes com o precoInsumo
   if (isProcessado && precoInsumo) {
     DB.ingredients = DB.ingredients||[];
     const ei    = DB.ingredients.findIndex(i=>i.name.toLowerCase()===name.toLowerCase());
@@ -1393,7 +1751,7 @@ async function saveAllIngredients() {
     if (name) updated.push({name,unit,preco});
   });
   DB.ingredients = updated;
-  rebuildDatalist();   // ← atualiza lista suspensa
+  rebuildDatalist();
   closeModal('modal-ingredients');
   const ok = await pushData({action:'saveIngredients', ingredients: updated});
   toast(ok ? 'Ingredientes salvos ✓' : 'Salvo localmente');
