@@ -1251,22 +1251,37 @@ function openRecipe(id) {
 // ── Monta painel "como fazer" para cada processado usado na receita ──
 function buildProcDetailBlocks(ings) {
   const blocks = [];
+  const seen   = new Set(); // evita duplicar se o mesmo processado aparecer duas vezes
   (ings||[]).forEach((ing, idx) => {
     if (!ing.isProcessado) return;
     const proc = getProcessadoByName(ing.name);
     if (!proc) return;
+    if (seen.has(proc.id)) return;
+    seen.add(proc.id);
 
-    const procIngs = proc.ingredients || [];
-    const totalCost = procIngs.reduce((s,i) => s + (parseFloat(i.custo)||0), 0);
+    const procIngs  = proc.ingredients || [];
+
+    // recalcula custo de cada ingrediente do processado ao vivo
+    const procIngsCalc = procIngs.map(pi => {
+      const subProc  = getProcessadoByName(pi.name);
+      const isSubProc = !!subProc || !!pi.isProcessado;
+      const precoKg  = isSubProc && subProc ? subProc.precoInsumo : getIngPreco(pi.name);
+      const custo    = precoKg != null ? (parseFloat(pi.qty)||0) * precoKg : (parseFloat(pi.custo)||0);
+      return { ...pi, custo, precoKg };
+    });
+
+    const totalCost = procIngsCalc.reduce((s,i) => s + (i.custo||0), 0);
     const rendTotal = calcRendimento(procIngs);
+    // custo/kg: usa precoInsumo salvo, ou recalcula
     const custoKg   = proc.precoInsumo || (rendTotal > 0 ? totalCost / rendTotal : 0);
 
-    const ingRows = procIngs.map(pi => {
-      const precoKgPi = pi.isProcessado ? (getProcessadoByName(pi.name)?.precoInsumo || getIngPreco(pi.name)) : getIngPreco(pi.name);
+    const ingRows = procIngsCalc.map(pi => {
+      const precoKgDisplay = pi.precoKg != null ? fmtR(pi.precoKg)+'/kg' : (pi.pkgkg||'—');
+      const subBadge = (getProcessadoByName(pi.name)||pi.isProcessado) ? '<span class="badge-proc-ing">proc</span>' : '';
       return `<tr>
-        <td>${pi.name}${pi.isProcessado ? '<span class="badge-proc-ing">proc</span>' : ''}</td>
+        <td>${pi.name}${subBadge}</td>
         <td>${pi.qty||''}</td>
-        <td>${precoKgPi != null ? fmtR(precoKgPi)+'/kg' : (pi.pkgkg||'—')}</td>
+        <td>${precoKgDisplay}</td>
         <td>${fmtR(pi.custo)}</td>
       </tr>`;
     }).join('');
@@ -1278,7 +1293,7 @@ function buildProcDetailBlocks(ings) {
             <span class="proc-detail-icon">🔮</span>
             <div>
               <div class="proc-detail-title">Como fazer: ${proc.name}</div>
-              <div class="proc-detail-sub">usado como ingrediente nesta receita · ${ing.qty ? ing.qty+' kg' : ''}</div>
+              <div class="proc-detail-sub">usado como ingrediente · ${ing.qty ? ing.qty+' kg' : ''} · custo/kg: ${fmtR(custoKg)}</div>
             </div>
           </div>
           <span class="proc-detail-toggle-icon" id="procblock-icon-${idx}">▾</span>
@@ -1290,12 +1305,12 @@ function buildProcDetailBlocks(ings) {
               <thead><tr><th>ingrediente</th><th>qtd.</th><th>preço/kg</th><th>custo</th></tr></thead>
               <tbody>
                 ${ingRows}
-                <tr class="proc-ing-total"><td colspan="3">custo total</td><td>${fmtR(totalCost)}</td></tr>
+                <tr class="proc-ing-total"><td colspan="3">custo total do lote</td><td>${fmtR(totalCost)}</td></tr>
               </tbody>
             </table>
             <div class="proc-rend-summary">
               <div class="proc-rend-card">
-                <div class="prc-lbl">Custo total</div>
+                <div class="prc-lbl">Custo do lote</div>
                 <div class="prc-val">R$ ${totalCost.toFixed(2).replace('.',',')}</div>
               </div>
               <div class="proc-rend-card">
@@ -1303,8 +1318,8 @@ function buildProcDetailBlocks(ings) {
                 <div class="prc-val">${rendTotal > 0 ? rendTotal.toFixed(3)+' kg' : '—'}</div>
               </div>
               <div class="proc-rend-card">
-                <div class="prc-lbl">Custo/kg</div>
-                <div class="prc-val">${fmtR(custoKg)}</div>
+                <div class="prc-lbl">Custo/kg usado</div>
+                <div class="prc-val" style="color:var(--proc-color)">${fmtR(custoKg)}</div>
               </div>
             </div>
           </div>
@@ -1326,11 +1341,13 @@ function renderDetail() {
   const r    = currentRecipe;
   const ings = r.ingredients||[];
 
-  // custo: para cada ingrediente, usa getPrecoKg respeitando flag isProcessado
+  // custo: auto-detecta processado pelo nome (independe do flag salvo)
   const ingsComCusto = ings.map(ing => {
-    const precoKg = getPrecoKg(ing.name, ing.isProcessado);
-    const custo   = precoKg != null ? (parseFloat(ing.qty)||0) * precoKg : (parseFloat(ing.custo)||0);
-    return { ...ing, custo, precoKg };
+    const procMatch  = getProcessadoByName(ing.name); // tenta casar com receita processada
+    const isProc     = !!procMatch || !!ing.isProcessado;
+    const precoKg    = isProc && procMatch ? procMatch.precoInsumo : getIngPreco(ing.name);
+    const custo      = precoKg != null ? (parseFloat(ing.qty)||0) * precoKg : (parseFloat(ing.custo)||0);
+    return { ...ing, isProcessado: isProc, custo, precoKg };
   });
   const totalCost = ingsComCusto.reduce((s,i)=>s+(i.custo||0), 0);
   const cmv       = r.preco ? Math.round((totalCost/r.preco)*100) : 0;
@@ -1460,7 +1477,9 @@ function recalcProcessado() {
     const hintEl  = document.getElementById('pm-custo-hint');
     let cmvTotal  = 0;
     ings.forEach(ing => {
-      const p = getPrecoKg(ing.name, ing.isProcessado);
+      const procMatch = getProcessadoByName(ing.name);
+      const isProc    = !!procMatch || !!ing.isProcessado;
+      const p = isProc && procMatch ? procMatch.precoInsumo : getIngPreco(ing.name);
       if (p) cmvTotal += (parseFloat(ing.qty)||0) * p;
     });
     if (rendTotal > 0 && cmvTotal > 0) {
@@ -1634,12 +1653,14 @@ function _collectSilent() {
   });
 }
 
-// custo calculado automaticamente: processados buscam precoInsumo, insumos normais buscam lista mestre
+// custo calculado automaticamente: detecta processado pelo nome OU pelo checkbox
 function collectIngredients() {
   return _collectSilent().filter(i => i.name).map(i => {
-    const precoKg = getPrecoKg(i.name, i.isProcessado);
-    const custo   = precoKg != null ? i.qty * precoKg : 0;
-    return { ...i, custo, processed: null };
+    const procMatch  = getProcessadoByName(i.name);
+    const isProc     = !!procMatch || !!i.isProcessado;
+    const precoKg    = isProc && procMatch ? procMatch.precoInsumo : getIngPreco(i.name);
+    const custo      = precoKg != null ? i.qty * precoKg : 0;
+    return { ...i, isProcessado: isProc, custo, processed: null };
   });
 }
 
